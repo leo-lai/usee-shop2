@@ -1030,6 +1030,21 @@ const _server = {
     },
     eyeResult(formData = {}) {
       return _http.post('/pupilsDiagnosis/pupilsSymptom', formData)
+    },
+    getResult(formData = {}) {
+      return _http.post('/pupilsDiagnosis/pupilsAndConstitution', formData)
+    },
+    getReportList(page = 1, rows = 10) {
+      return _http.post('/pupilsDiagnosis/pupilsAndConstitutionList', {
+        page, rows
+      }).then((response) => {
+        !response.data && (response.data = {})
+        response.data.rows = rows
+        return response
+      })
+    },
+    getReportInfo(uuidCode) {
+      return _http.post('/pupilsDiagnosis/pupilsAndConstitutionInfo', {uuidCode})
     }
   }
 }

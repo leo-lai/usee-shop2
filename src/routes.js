@@ -51,14 +51,26 @@ const routes = [
   {
     path: '/check/body',
     name: 'check-body',
-    meta: { title: '体质检测'},
+    meta: { title: 'U视门诊'},
     component: (resolve) => require(['./pages/check-body'], resolve)
   },
   {
     path: '/check/eye',
     name: 'check-eye',
-    meta: { title: '瞳诊系统'},
+    meta: { title: 'U视门诊'},
     component: (resolve) => require(['./pages/check-eye'], resolve)
+  },
+  {
+    path: '/check/report',
+    name: 'check-report',
+    meta: { title: 'U视门诊检测报告'},
+    component: (resolve) => require(['./pages/check-report'], resolve)
+  },
+  {
+    path: '/check/report/info/:id',
+    name: 'check-report-info',
+    meta: { title: 'U视门诊检测报告'},
+    component: (resolve) => require(['./pages/check-report-info'], resolve)
   },
   {
     path: '/agent/apply',

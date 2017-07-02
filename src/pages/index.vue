@@ -17,19 +17,19 @@
 
       <!-- menu -->
       <div class="mui-row l-text-center l-bg-white l-border-t">
-        <a class="l-text-default mui-col-sm-3 mui-col-xs-3 l-padding-tb l-link" @click="$link('/check/eye', 'page-in')">
-          <p><img style="height: 2rem;" src="~assets/images/eyeCheck.png" alt=""></p>
-          <p class="l-margin-t-xs l-fs-s">瞳诊系统</p>
+        <a class="l-text-default mui-col-sm-4 mui-col-xs-4 l-padding-tb l-link" @click="$link('/check/eye', 'page-in')">
+          <p><img style="height: 2rem;" src="~assets/images/ushimenzhen.png" alt=""></p>
+          <p class="l-margin-t-xs l-fs-s">U视门诊</p>
         </a>
-        <a class="l-text-default mui-col-sm-3 mui-col-xs-3 l-padding-tb l-link" @click="$link('/check/body', 'page-in')">
+        <!-- <a class="l-text-default mui-col-sm-4 mui-col-xs-4 l-padding-tb l-link" @click="$link('/check/body', 'page-in')">
           <p><img style="height: 2rem;" src="~assets/images/bodyCheck.png" alt=""></p>
           <p class="l-margin-t-xs l-fs-s">体质检测</p>
+        </a> -->
+        <a class="l-text-default mui-col-sm-4 mui-col-xs-4 l-padding-tb l-link" @click="$link('/check/report', 'page-in')">
+          <p><img style="height: 2rem;" src="~assets/images/jiancebaogao.png" alt=""></p>
+          <p class="l-margin-t-xs l-fs-s">检测报告</p>
         </a>
-        <a class="l-text-default mui-col-sm-3 mui-col-xs-3 l-padding-tb l-link" @click="$mui.coding">
-          <p><img style="height: 2rem;" src="~assets/images/eyeTrain.png" alt=""></p>
-          <p class="l-margin-t-xs l-fs-s">视疲劳训练</p>
-        </a>
-        <a class="l-text-default mui-col-sm-3 mui-col-xs-3 l-padding-tb l-link" @click="$link('order/list?tab=2', 'page-in')">
+        <a class="l-text-default mui-col-sm-4 mui-col-xs-4 l-padding-tb l-link" @click="$link('order/list?tab=2', 'page-in')">
           <p><img style="height: 2rem;" src="~assets/images/express.png" alt=""></p>
           <p class="l-margin-t-xs l-fs-s">物流查询</p>
         </a>

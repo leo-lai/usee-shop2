@@ -1,47 +1,5 @@
 <template>
   <div class="l-page-group">
-    <div class="l-page">
-      <header class="mui-bar mui-bar-nav l-black" v-if="!$device.isWechat">
-        <h1 class="mui-title">{{ $route.meta.title }}</h1>
-        <a class="mui-icon mui-icon-arrowleft mui-pull-left _nav-back"></a>
-      </header>
-      <div class="mui-content">
-        <div class="l-bg-white l-margin-b">
-          <div class="l-flex-hc l-padding-btn l-border-b">
-            <h3 class="l-rest">中医体质检测</h3>
-          </div>
-          <div>
-            <img src="~assets/images/layout-005.jpg" alt="">
-          </div>
-        </div>
-
-        <div class="l-bg-white" style="padding: 1rem 0;">
-          <div class="l-Q-item" @click="toggleShow($event)">
-            <div class="_hd"><h3>什么是体质？</h3></div>
-            <div class="_bd">
-              <ul>
-                <li>“体”，指身体，“质”为性质、本质。是机体因为脏腑、经络、气血、阴阳等的盛衰偏颇而形成的素质特征。</li>
-                <li>中国人可分为9种基本体质类型，即平和质、气虚质、阳虚质、阴虚质、痰湿质、湿热质、血瘀质、气郁质和特禀质。</li>
-              </ul>
-            </div>
-          </div>
-          <div class="l-Q-item" @click="toggleShow($event)">
-            <div class="_hd"><h3>体质检测有什么用？</h3></div>
-            <div class="_bd">
-              <ul>
-                <li>体质检测可以知晓身体状况，分析预防疾病的发生。</li>
-                <li>获得个性化调理体质方案，针对性改善和增强自身的免疫能力。</li>
-              </ul>
-            </div>
-          </div>
-          <br>
-          <div class="l-text-center">
-            <button class="_start-btn" @click="$pageTo('#page-question', '体质检测问答')">开始<br>检测</button>
-          </div>
-          <br>
-        </div>
-      </div>
-    </div>
     <div class="l-page" id="page-question">
       <header class="mui-bar mui-bar-nav l-black" v-if="!$device.isWechat">
         <h1 class="mui-title">体质检测问答</h1>
@@ -49,7 +7,7 @@
       </header>
       <div id="question-content" class="mui-content">
         <div class="l-padding-btn l-bg-white l-border-b" style="color:#64c4a8;">
-          请根据您的感受和体验耐心填写<span class="l-text-gray l-fs-s">
+          请根据您的感受和体验耐心作答<span class="l-text-gray l-fs-s">
           （共{{bodyQuestion.length}}题）</span>
         </div>
         <ul class="l-check-question l-margin-t">
@@ -77,21 +35,26 @@
     </div>
     <div class="l-page" id="page-result">
       <header class="mui-bar mui-bar-nav l-black" v-if="!$device.isWechat">
-        <h1 class="mui-title">体质检测结果</h1>
+        <h1 class="mui-title">检测结果</h1>
         <a class="mui-icon mui-icon-arrowleft mui-pull-left _nav-back"></a>
       </header>
-      <div class="mui-content">
+      <div class="mui-content" style="background-color:#fff; font-size:0.75rem;" v-if="mainBody">
         <div class="l-result-chart">
+          <div class="l-text-center l-margin-b">
+            <img width="60" src="~assets/images/sys-013.png" alt="">
+            <p>检测结果</p>
+          </div>
           <div class="_hd">
             <p class="l-text-gray l-fs-s">系统检测出您的主体质是：</p>
             <h3 class="l-fs-xl l-text-center" style="color:#ffbd2e; margin: 0.75rem 0;">{{mainBody.constitutionRemark}}</h3>
             <p class="l-fs-m" v-if="otherBody.length > 0">兼有{{otherBody.join('、')}}</p>
-            <p class="l-text-center l-fs-m" v-else-if="mainBody.constitutionScore == 0">恭喜您处于身心和谐状态，请努力保持。</p>
           </div>
+
+          <!-- 体质分数柱形图 -->
           <div class="_bd" v-if="mainBody.constitutionScore > 0">
             <div class="l-chart-div">
               <div class="_chart">
-                <div class="_item" v-for="item in checkResult" :style="{ height: item.height + 'px'}">
+                <div class="_item" v-for="item in bodyResult" :style="{ height: item.height + 'px'}">
                   <i>{{item.height}}</i>
                   <span>{{item.constitutionRemark.substring(0, mainBody.constitutionRemark.length-1)}}</span>
                 </div>
@@ -99,61 +62,147 @@
             </div>
             <p style="font-size:0.6rem; margin: 0.5rem 0; text-align:center; color:#ffbd2e;">分数越高 偏颇越重</p>
           </div>
+
+          <!-- 脏腑图 -->
+          <div class="_bd l-margin-t" v-if="visceraResult.length > 0">
+            <p>根据体质辨识及瞳诊检测系统的综合判定，您的以下脏腑需要注意调理：</p>
+            <div class="l-text-center" v-for="item in visceraResult">
+              <img :src="item.image" alt="">
+              <p style="color:#ffbd2e;">{{item.name}}</p>
+            </div>
+            <p class="l-text-gray l-fs-xs l-margin-t">
+              注：如果眼球中出现的血丝或斑点呈鲜红状，则上述脏腑一般存在新病或急病；如果为淡黄色，则一般多为病情将愈；暗灰色则表示该脏腑气血不足；如果没有血丝，则根据体质情况上述脏腑需要注意调理；
+            </p>
+          </div>
         </div>
         
+        <!-- 体质结果分析 -->
         <template v-if="mainBody.constitutionRemark && checkBodyData[mainBody.constitutionRemark]">
-          <div class="l-result-suggest">
-            <div class="_item" @click="toggleShow($event)">
-              <div class="_hd">{{mainBody.constitutionRemark}}的症状</div>
-              <ul>
-                <li v-for="item in checkBodyData[mainBody.constitutionRemark].symptom">{{item}}</li>
-              </ul>  
+          <div class="l-reuslt-item">
+            <div class="_hd">
+              <img width="60" src="~assets/images/sys-016.png" alt="">
+              <p>结果分析</p>
             </div>
-            <div class="_item" @click="toggleShow($event)">
-              <div class="_hd">{{mainBody.constitutionRemark}}究竟是什么意思？</div>
-              <ul>
-                <li v-for="item in checkBodyData[mainBody.constitutionRemark].meaning">{{item}}</li>
-              </ul> 
-            </div>
-            <div class="_item" @click="toggleShow($event)">
-              <div class="_hd">{{mainBody.constitutionRemark}}的困扰</div>
-              <ul>
-                <li v-for="item in checkBodyData[mainBody.constitutionRemark].worry">{{item}}</li>
-              </ul> 
-            </div>
-            <div class="_item" @click="toggleShow($event)">
-              <div class="_hd">我为什么会{{mainBody.constitutionRemark}}？</div>
-              <ul>
-                <li v-for="item in checkBodyData[mainBody.constitutionRemark].why">{{item}}</li>
-              </ul> 
-            </div>
-            <div class="_item" @click="toggleShow($event)">
-              <div class="_hd">哪些是{{mainBody.constitutionRemark}}最需要警惕？</div>
-              <ul>
-                <li v-for="item in checkBodyData[mainBody.constitutionRemark].careful">{{item}}</li>
-              </ul> 
-            </div>
-            <div class="_item" @click="toggleShow($event)">
-              <div class="_hd">怎么改善？</div>
-              <ul>
-                <li v-for="item in checkBodyData[mainBody.constitutionRemark].how">{{item}}</li>
-              </ul> 
-            </div>
-          </div>
-
-          <div class="l-result-goods">
-            <p class="l-text-gray">推荐商品</p>
-            <div class="l-zoom">
-              <img class="l-fl" style="width:5rem; margin:0.75rem 0.75rem 0 0;" :src="checkBodyData[mainBody.constitutionRemark].goods.image" alt="">
-              <h3 class="l-margin-tb">{{checkBodyData[mainBody.constitutionRemark].goods.name}}</h3>
-              <p class="l-text-gray">预购热线：<br>400-180-6900</p>
-            </div>
+            <div class="_bd">
+              <div class="_result">
+                <div class="_result-item"  @click="toggleShow($event)">
+                  <div class="_hd">{{mainBody.constitutionRemark}}的症状？</div>
+                  <div class="_bd">
+                    <ul>
+                      <li v-for="item in checkBodyData[mainBody.constitutionRemark].symptom">{{item}}</li>
+                    </ul>
+                  </div>  
+                </div>
+                <div class="_result-item"  @click="toggleShow($event)">
+                  <div class="_hd">{{mainBody.constitutionRemark}}究竟是什么意思？</div>
+                  <div class="_bd">
+                    <ul>
+                      <li v-for="item in checkBodyData[mainBody.constitutionRemark].meaning">{{item}}</li>
+                    </ul> 
+                  </div>  
+                </div>
+                <div class="_result-item"  @click="toggleShow($event)">
+                  <div class="_hd">{{mainBody.constitutionRemark}}的困扰？</div>
+                  <div class="_bd">
+                    <ul>
+                      <li v-for="item in checkBodyData[mainBody.constitutionRemark].worry">{{item}}</li>
+                    </ul> 
+                  </div>  
+                </div>
+                <div class="_result-item"  @click="toggleShow($event)">
+                  <div class="_hd">我为什么会是{{mainBody.constitutionRemark}}？</div>
+                  <div class="_bd">
+                    <ul>
+                      <li v-for="item in checkBodyData[mainBody.constitutionRemark].why">{{item}}</li>
+                    </ul>
+                  </div>  
+                </div>
+                <div class="_result-item"  @click="toggleShow($event)">
+                  <div class="_hd">哪些是{{mainBody.constitutionRemark}}最需要警惕？</div>
+                  <div class="_bd">
+                    <ul>
+                      <li v-for="item in checkBodyData[mainBody.constitutionRemark].careful">{{item}}</li>
+                    </ul> 
+                  </div>  
+                </div>
+                <div class="_result-item"  @click="toggleShow($event)">
+                  <div class="_hd">怎么改善？</div>
+                  <div class="_bd">
+                    <ul>
+                      <li v-for="item in checkBodyData[mainBody.constitutionRemark].how">{{item}}</li>
+                    </ul> 
+                  </div>  
+                </div>
+              </div>
+            </div>          
           </div>
         </template>
+        
+        <!-- 瞳诊结果分析 -->
+        <template v-if="eyeResult.length > 0">
+          <div class="l-reuslt-item">
+            <div class="_hd">
+              <img width="60" src="~assets/images/sys-017.png" alt="">
+              <p>日常护理</p>
+            </div>
+            <div class="_bd">
+              <p>根据您的脏腑及体质情况，我们建议您应该多注意以下事项：</p>
+              <div class="_result">
+                <div class="_result-item" v-for="item in eyeResult" @click="toggleShow($event)">
+                  <div class="_hd">有益于{{item.pupilsAreaName}}的建议</div>
+                  <div class="_bd">
+                    <p v-for="item2 in item.dailyNursing.split('|')">{{item2}}</p>
+                  </div>  
+                </div>
+              </div>
+            </div>          
+          </div>
+          <div class="l-reuslt-item">
+            <div class="_hd">
+              <img width="60" src="~assets/images/sys-015.png" alt="">
+              <p>食疗方案</p>
+            </div>
+            <div class="_bd">
+              <p>为您推荐以下食疗方案，可以在平时饮食中进行搭配：</p>
+              <div class="_result">
+                <div class="_result-item" v-for="item in eyeResult" @click="toggleShow($event)">
+                  <div class="_hd">有益于{{item.pupilsAreaName}}的食疗方案</div>
+                  <div class="_bd">
+                    <p v-for="item2 in item.dietTyerapy.split('|')">{{item2}}</p>
+                  </div>  
+                </div>
+              </div>
+            </div>          
+          </div>
+        </template>
+        
+        <!-- 推荐商品 -->
+        <div class="l-result-goods" style="margin-top: -1rem;">
+          <p class="l-text-gray">推荐商品</p>
+          <div class="l-zoom" v-if="eyeResult.length > 0">
+            <img class="l-fl" style="width:5rem; margin:0.75rem 0.75rem 0 0;" :src="goods[eyeResult[0].pupilsSymptomuId-1].image" alt="">
+            <h3 class="l-margin-tb">{{goods[eyeResult[0].pupilsSymptomuId-1].name}}</h3>
+            <p class="l-text-gray">预购热线：<br>400-180-6900</p>
+          </div>
+          <div class="l-zoom" v-else-if="mainBody.constitutionRemark && checkBodyData[mainBody.constitutionRemark]">
+            <img class="l-fl" style="width:5rem; margin:0.75rem 0.75rem 0 0;" :src="checkBodyData[mainBody.constitutionRemark].goods.image" alt="">
+            <h3 class="l-margin-tb">{{checkBodyData[mainBody.constitutionRemark].goods.name}}</h3>
+            <p class="l-text-gray">预购热线：<br>400-180-6900</p>
+          </div>
+        </div>
 
         <div style="margin:1rem;">
           <button type="button" class="mui-btn l-btn-main2" @click="checkAgain">再次检测</button>
+          <button type="button" class="mui-btn l-btn-white l-margin-t" @click="checkBack">返回</button>
+          <p class="l-fs-xs l-text-center l-text-gray l-margin-t">检测结果仅供参考，请以医院检查结果为准</p>
         </div>
+      </div>
+      <div class="mui-content l-text-center" style="background-color:#fff;" v-else>
+        <br> <br> <br>
+        <div>当前没有检测结果</div>
+        <br>
+        <button type="button" class="mui-btn l-btn-main2" style="width: 50%; margin: auto;" @click="checkAgain">去检测</button>
+        <br> <br> <br> 
       </div>
     </div>
   </div>
@@ -181,7 +230,131 @@ export default {
       checkBodyData,
       currentIndex: 0,
       bodyQuestion: [],
-      checkResult: []
+      eyeResult: [],
+      bodyResult: [],
+      visceraResult: [],
+      goods: [
+        {
+          areaIndex: 1,
+          name: 'U-1',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion1.jpg'
+        },{
+          areaIndex: 2,
+          name: 'U-3',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion3.jpg'
+        },{
+          areaIndex: 3,
+          name: 'U-2',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion2.jpg'
+        },{
+          areaIndex: 4,
+          name: 'U-5',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion5.jpg'
+        },{
+          areaIndex: 5,
+          name: 'U-1',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion1.jpg'
+        },{
+          areaIndex: 6,
+          name: 'U-6',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion6.jpg'
+        },{
+          areaIndex: 7,
+          name: 'U-4',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion4.jpg'
+        },{
+          areaIndex: 8,
+          name: 'U-4',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion4.jpg'
+        },{
+          areaIndex: 9,
+          name: 'U-7',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion7.jpg'
+        },{
+          areaIndex: 10,
+          name: 'U-5',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion5.jpg'
+        },{
+          areaIndex: 11,
+          name: 'U-1',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion1.jpg'
+        },{
+          areaIndex: 12,
+          name: 'U-4',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion4.jpg'
+        },{
+          areaIndex: 13,
+          name: 'U-8',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion8.jpg'
+        }
+      ],
+      viscera: [
+        {
+          index: 1,
+          name: '心脏',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/xin.jpg'
+        },
+        {
+          index: 2,
+          name: '肝脏',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/gan.jpg'
+        },
+        {
+          index: 3,
+          name: '脾脏',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/pi.jpg'
+        },
+        {
+          index: 4,
+          name: '肺',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/fei.jpg'
+        },
+        {
+          index: 5,
+          name: '肾脏',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/shen.jpg'
+        },
+        {
+          index: 6,
+          name: '胆',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/dan.jpg'
+        },
+        {
+          index: 7,
+          name: '胃',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/wei.jpg'
+        },
+        {
+          index: 8,
+          name: '小肠',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/xiaochang.jpg'
+        },
+        {
+          index: 9,
+          name: '大肠',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/dachang.jpg'
+        },
+        {
+          index: 10,
+          name: '上焦(咽喉至胸膈部分)',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/shangjiao.jpg'
+        },
+        {
+          index: 11,
+          name: '中焦(上腹腔部分)',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/zhongjiao.jpg'
+        },
+        {
+          index: 12,
+          name: '下焦(下腹腔部分)',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/xiajiao.jpg'
+        },
+        {
+          index: 13,
+          name: '膀胱',
+          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/pangguang.jpg'
+        }
+      ]
     }
   },
   computed: {
@@ -191,13 +364,13 @@ export default {
       })
     },
     mainBody() {
-      return this.checkResult.find((item)=>{
+      return this.bodyResult.find((item)=>{
         return item.isTop
-      }) || {}
+      })
     },
     otherBody() {
       let _other = []
-      this.checkResult.every((item)=>{
+      this.bodyResult.every((item)=>{
         if(!item.isTop){
           _other.push(item.constitutionRemark)
         }
@@ -218,18 +391,22 @@ export default {
       }
     },
     getBodyQuestion() {
-      return this.$server.check.bodyQuestion().then(({data})=>{
-        data.agentInfos = data.agentInfos.map((item)=>{
-          item.slted = {
-            score: '',
-            text: ''
-          }
-          return item
+      this.bodyQuestion = this.$storage.session.get('bodyQuestion') || []
+      if(this.bodyQuestion.length === 0){
+        this.$mui.showWaiting()
+        return this.$server.check.bodyQuestion().then(({data})=>{
+          data.agentInfos = data.agentInfos.map((item)=>{
+            item.slted = {
+              score: '',
+              text: ''
+            }
+            return item
+          })
+          this.bodyQuestion = data.agentInfos
+        }).finally(()=>{
+          this.$mui.hideWaiting()
         })
-        this.bodyQuestion = data.agentInfos
-      }).finally(()=>{
-        this.$mui.hideWaiting()
-      })
+      }
     },
     sltQuestion(index) {
       this.currentIndex = index
@@ -245,17 +422,25 @@ export default {
         this.bodyQuestion[index].slted = {
           score, text
         }
+
+        this.$storage.session.set('bodyQuestion', this.bodyQuestion)
         this.sltQuestion( Math.min(this.currentIndex + 1, 30) )
       }
     },
+    checkBack() {
+      this.$router.back()
+      // this.$link('/', 'page-out', 'replace')
+      // this.$storage.session.remove('eyeImages')
+      // this.$storage.session.remove('leftZzData')
+      // this.$storage.session.remove('rightZzData')
+      // this.$storage.session.remove('bodyQuestion')
+    },
     checkAgain() {
-      this.$mui.showWaiting()
-      this.getBodyQuestion().then(()=>{
-        this.$pageTo('#page-question', '体质检测问答', 'replace')
-        setTimeout(()=>{
-          this.scrollTo('#Q' + this.bodyQuestion[0].questionId)
-        }, 500)
-      })
+      this.$link('/check/eye', 'page-out', 'replace')
+      this.$storage.session.remove('eyeImages')
+      this.$storage.session.remove('leftZzData')
+      this.$storage.session.remove('rightZzData')
+      this.$storage.session.remove('bodyQuestion')
     },
     resultFormat(data = []) {
       let _top = data.find((item)=>{
@@ -270,41 +455,80 @@ export default {
       return data
     },
     submitAnswer() {
+
       let formData = {
-        answers: []
+        answers: [],
+        pupilsProblem: []
       }
 
-      this.bodyQuestion.forEach((item)=>{
+      // 瞳诊参数
+      let leftZzData = this.$storage.session.get('leftZzData') || []
+      let rightZzData = this.$storage.session.get('rightZzData') || []
+
+      let eachZzData = leftZzData.length > rightZzData.length ? leftZzData : rightZzData
+
+      let mergeZzData = eachZzData.map((item, index)=>{
+        return Object.assign([], leftZzData[index], rightZzData[index]).filter((_item)=>{
+          return !!_item
+        })
+      })
+      console.log(mergeZzData)
+      mergeZzData.every((item, index)=>{
+        if(item.length > 0){
+          formData.pupilsProblem.push({
+            pupilsAreaNum: index+1,
+            description: item.join(',')
+          })  
+        }
+        return true
+      })
+      formData.pupilsProblem = window.JSON.stringify(formData.pupilsProblem)
+      
+      // 体质参数
+      let bodyQuestion = this.$storage.session.get('bodyQuestion') || []
+
+      bodyQuestion.forEach((item)=>{
         formData.answers.push({
           score: item.slted.score,
           type: item.questionType
         })
       })
-
       formData.answers  = window.JSON.stringify(formData.answers)
 
-      this.$mui.showWaiting('提交中...')
-      this.$server.check.bodyAnswer(formData).then(({data})=>{
-        
-        this.checkResult = this.resultFormat(data)
-        this.$pageTo('#page-result', '体质检测结果', 'replace')
+
+      this.$mui.showWaiting('系统检测中...')
+      this.$server.check.getResult(formData).then(({data})=>{
+        let data1 = data.pupilsSymptomResult, data2 = this.resultFormat(data.constitutionResult)
+        data1.length = Math.min(2, data1.length)
+        this.visceraResult = []
+        if(data1.length > 0){
+          this.visceraResult[0] = this.viscera.find((item)=>item.name === data1[0].pupilsAreaName)
+          data1[1] && (this.visceraResult[1] = this.viscera.find((item)=>item.name === data1[1].pupilsAreaName))
+        }else if(data2.length > 0){
+          let mainBody = data2.find((item)=>{
+            return item.isTop
+          })
+          if(this.checkBodyData[mainBody.constitutionRemark].viscera.length > 0){
+            this.visceraResult[0] = this.viscera[this.checkBodyData[mainBody.constitutionRemark].viscera[0]-1]
+            this.visceraResult[1] = this.viscera[this.checkBodyData[mainBody.constitutionRemark].viscera[1]-1]  
+          }
+        }
+        this.eyeResult = data1
+        this.bodyResult = data2
+
+        this.$pageTo('#page-result', '检测结果', 'replace')
+
+        this.$storage.session.remove('eyeImages')
+        this.$storage.session.remove('leftZzData')
+        this.$storage.session.remove('rightZzData')
+        this.$storage.session.remove('bodyQuestion')
       }).finally(()=>{
         this.$mui.hideWaiting()
       })
     }
   },
   created() {
-    this.$mui.showWaiting()
-    this.$server.check.bodyCheckLast().then(({data})=>{
-      if(data){
-        setTimeout(()=>{
-          this.checkResult = this.resultFormat(data)
-          this.$pageTo('#page-result', '上次检测结果')
-        }, 600)
-      }
-    }).finally(()=>{
-      this.getBodyQuestion()
-    })
+    this.getBodyQuestion()
   }
 }
 </script>
@@ -322,9 +546,9 @@ export default {
   ._bd{overflow: hidden; height: 0;}
   li{font-size: 0.75rem; margin-bottom: 0.5rem;padding-right: 0.75rem;}
 }
-._show {
+.l-Q-item._show {
   ._hd:after{transform: rotate(180deg);}
-  ._bd{height: auto;}
+  ._bd{height: auto !important;}
 } 
 
 ._start-btn{
@@ -401,13 +625,13 @@ export default {
   margin: 0 1rem;
   ._chart{
     background: linear-gradient(180deg, transparent 19px, rgba(255, 188, 46, 0.3) 20px); background-size: 100% 20px;
-    width: 100%; height: 100px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 0.25rem; margin:1rem 0 1.6rem;
+    width: 100%; height: 100px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 0.25rem; margin:1.4rem 0;
     ._item{
       width: 10%; max-width: 1rem; height: 0; flex:1; background: #ffbc2e; margin: 0 2%;
       border-radius: 3px 3px 0 0; position: relative; 
       i{
-        position: absolute; background: #5dd76f; color: #fff; font-size: 0.55rem; border-radius: 3px; min-width: 1rem; text-align: center;
-        top: -1.2rem; padding:2px; line-height: 1; z-index: 1;left: 50%; transform: translateX(-50%);
+        position: absolute; background: #5dd76f; color: #fff; font-size: 0.55rem; border-radius: 3px; min-width: 1.2rem; text-align: center;
+        top: -1.2rem; padding:3px 2px; line-height: 1; z-index: 1;left: 50%; transform: translateX(-50%);
       }
       i:after{
         position: absolute; bottom: -1px; content: ''; width: 0.5rem; height: 0.5rem; background: #5dd76f; transform: rotate(45deg); z-index: -2; left: 50%; margin-left: -0.25rem; 
@@ -419,7 +643,7 @@ export default {
   }
 }
 .l-result-chart{
-  background:#fff; padding: 1rem; margin: 1rem; border-radius: 0.5rem;
+  background:#fff; padding: 1rem; border-radius: 0.5rem;
 }
 .l-result-suggest{
   background:#fff; padding:0.5rem 1rem; margin: 1rem; border-radius: 0.5rem;
@@ -443,5 +667,33 @@ export default {
 }
 .l-result-goods{
   background:#fff; padding:0.5rem 1rem; margin: 1rem; border-radius: 0.5rem;
+}
+
+.l-reuslt-item{
+  margin: 1rem; font-size: 0.75rem; padding-bottom: 0.75rem;
+  >._hd{
+    text-align: center; margin-bottom: 1rem;
+  }
+  ._result{
+    background: #efefef; padding: 0.25rem 0.75rem; border-radius: 0.25rem; margin: 0.5rem 0;
+    p{margin:0.5rem 0; font-size: 0.75rem;}
+  }
+  ._result-item{
+    background: #fff; border-radius: 5px; margin: 0.5rem 0; padding: 0 0.5rem;
+    ._hd{position: relative; padding:0.5rem 1rem 0.5rem 0; }
+    ._hd:after{
+      font-family: Muiicons; transition: all 0.5s;
+      content: '\E583';  position: absolute;  right: 0; 
+    }
+    p{margin:0.25rem 0;}
+    ul{padding-left: 1rem; font-size: 0.75rem; color: #888; margin: 0.25rem 0;}
+    ._bd{display: none; padding: 0.25rem 0;}
+  }
+  ._result-item._show{
+    ._hd:after{
+      transform: rotate(90deg); 
+    }
+    ._bd{display: block; border-top: 1px dashed #efefef;}
+  }
 }
 </style>

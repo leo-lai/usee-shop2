@@ -17,7 +17,7 @@
             <div v-if="userInfo.agentId == 1" class="l-icon l-fs-xl l-text-warn" @click="$link('/me/qrcode', 'page-in')">&#xe650;</div>
           </div>
         </template>
-        <div class="l-loading-inline" v-if="loading" style="padding: 1.8rem 0;"><i class="mui-spinner"></i></div>
+        <!-- <div class="l-loading-inline" v-if="loading" style="padding: 1.6rem 0;"><i class="mui-spinner"></i></div> -->
       </div>
 
       <div class="l-tab-imgtit l-border-t l-flex-hc">
@@ -75,6 +75,9 @@
 
         <ul class="mui-table-view mui-table-view-chevron l-margin-t">
           <li class="mui-table-view-cell">
+            <a class="mui-navigate-right" @click="$link('/check/report', 'page-in')">U视门诊检测报告</a>
+          </li>
+          <li class="mui-table-view-cell">
             <a class="mui-navigate-right" @click="$link('http://wx.ty-2009.com/CX/FW17/Index')">防伪查询</a>
           </li>
           <li class="mui-table-view-cell">
@@ -102,7 +105,7 @@ export default {
       loading: false,
       defaultAvatar: require('assets/images/avatar.jpg'),
       shopcarNumber: 0,
-      userInfo: null
+      userInfo: {}
     }
   },
   methods: {

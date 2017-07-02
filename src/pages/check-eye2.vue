@@ -1,46 +1,30 @@
 <template>
   <div class="l-page-group">
-    <div class="l-page">
+    <div class="l-page" style="background:#fff;">
       <header class="mui-bar mui-bar-nav l-black" v-if="!$device.isWechat">
         <h1 class="mui-title">{{ $route.meta.title }}</h1>
         <a class="mui-icon mui-icon-arrowleft mui-pull-left _nav-back"></a>
       </header>
-      <div class="mui-content">
-        <div class="l-bg-white l-margin-b l-text-center">
-          <img src="~assets/images/sys-018.png" alt="">
-          <img src="~assets/images/layout-005.jpg" alt="">
+      <footer class="mui-bar mui-bar-footer l-flex-hc l-transparent">
+        <button type="button" class="mui-btn l-btn-main2" @click="$pageTo('#page-pz', '拍摄眼睛照片')">开始瞳诊</button>
+      </footer>
+      <div class="mui-content" style="background:#fff;">
+        <div class="l-text-center l-margin">
+          <h3>观瞳知健康</h3>
+          <p class="l-text-gray l-margin l-fs-m">五脏六腑之精气皆注于目<br>眼睛可以反映人体内脏或器官的病变</p>
+          <img width="200" src="~assets/images/sys-001.jpg" alt="">
         </div>
-
-        <div class="l-bg-white" style="padding: 1rem 0;">
-          <div class="l-Q-item" @click="toggleShow($event)">
-            <div class="_hd"><h3>01 拍摄眼睛照片</h3></div>
-            <div class="_bd l-margin">
-              五脏六腑之精气皆注于目,眼睛可以反映人体脏腑器官存在的异常或病变，通过拍摄眼睛照片观察眼睛存在的症状及对应的分布情况。
-            </div>
-          </div>
-          <div class="l-Q-item" @click="toggleShow($event)">
-            <div class="_hd"><h3>02 选择症状分布区域</h3></div>
-            <div class="_bd l-margin">
-              通过查看拍摄的眼睛照片选择对应点分布区域及对应症状。
-            </div>
-          </div>
-          <div class="l-Q-item" @click="toggleShow($event)">
-            <div class="_hd"><h3>03 回答体质检测题目</h3></div>
-            <div class="_bd l-margin">
-              根据当前的真实感受，回答30道权威中医体质题目，耗时约1分钟。
-            </div>
-          </div>
-          <div class="l-Q-item" @click="toggleShow($event)">
-            <div class="_hd"><h3>04 得到检测结果</h3></div>
-            <div class="_bd l-margin">
-              系统将得出您对应体质及需要调理的脏腑，并提供针对您的身体情况提供对应的建议，定制对应的日常调护方案，食疗方案等。
-            </div>
-          </div>
-          <br>
-          <div class="l-text-center">
-            <button class="_start-btn" @click="startCheck">开始<br>检测</button>
-          </div>
-          <br>
+        <br>
+        <div class="l-text-center l-margin">
+          <h3>拍摄左右眼照片</h3>
+          <p class="l-text-gray l-margin l-fs-m">睁大眼睛拍摄左右眼照片并上传<br>可以使用食指和拇指配合使眼睛睁大</p>
+          <img width="200" src="~assets/images/sys-002.jpg" alt="">
+        </div>
+        <br>
+        <div class="l-text-center l-margin">
+          <h3>调理方案</h3>
+          <p class="l-text-gray l-margin l-fs-m">反应脏腑问题，对应穴位调理，食疗方案及建议</p>
+          <img width="200" src="~assets/images/sys-003.jpg" alt="">
         </div>
       </div>
     </div>
@@ -50,7 +34,7 @@
         <a class="mui-icon mui-icon-arrowleft mui-pull-left _nav-back"></a>
       </header>
       <footer class="mui-bar mui-bar-footer l-flex-hc l-footer-btn">
-        <button type="button" style="width:50%;background:#fff; color:#999;" @click="$link('/check/eye', 'page-out', 'replace')">返回</button>
+        <button type="button" style="width:50%;background:#fff; color:#999;" @click="$router.back()">返回</button>
         <button type="button" style="width:50%; background:#64c4a8;color:#fff;" @click="submitPhoto">下一步</button>
       </footer>
       <div class="mui-content" style="background:#fff;">
@@ -103,8 +87,8 @@
         <a class="mui-icon mui-icon-arrowleft mui-pull-left _nav-back"></a>
       </header>
       <footer class="mui-bar mui-bar-footer l-flex-hc l-footer-btn">
-        <button type="button" style="width:50%;background:#fff; color:#999;" @click="$link('/check/eye#page-pz', 'page-out', 'replace')">上一步</button>
-        <button type="button" style="width:50%; background:#64c4a8;color:#fff;" @click="$pageTo('#page-right', '选择有右眼症状', 'replace')">下一步</button>
+        <button type="button" style="width:50%;background:#fff; color:#999;" @click="$router.back()">上一步</button>
+        <button type="button" style="width:50%; background:#64c4a8;color:#fff;" @click="$pageTo('#page-right', '选择有右眼症状')">下一步</button>
       </footer>
       <div class="mui-content" style="background:#fff;">
         <div class="l-eye-check">
@@ -200,7 +184,7 @@
         <a class="mui-icon mui-icon-arrowleft mui-pull-left _nav-back"></a>
       </header>
       <footer class="mui-bar mui-bar-footer l-flex-hc l-footer-btn">
-        <button type="button" style="width:50%;background:#fff; color:#999;" @click="$link('/check/eye#page-left', 'page-out', 'replace')">上一步</button>
+        <button type="button" style="width:50%;background:#fff; color:#999;" @click="$router.back()">上一步</button>
         <button type="button" style="width:50%; background:#64c4a8;color:#fff;" @click="getEyeResult">下一步</button>
       </footer>
       <div class="mui-content" style="background:#fff;">
@@ -507,13 +491,6 @@ export default {
     }
   },
   methods: {
-    startCheck() {
-      // this.$storage.session.remove('eyeImages')
-      // this.$storage.session.remove('leftZzData')
-      // this.$storage.session.remove('rightZzData')
-      // this.$storage.session.remove('bodyQuestion')
-      this.$pageTo('#page-pz', '拍摄眼睛照片', 'replace')
-    },
     toggleShow(e) {
       if(e.currentTarget.classList.contains('_show')){
         e.currentTarget.classList.remove('_show')
@@ -569,33 +546,46 @@ export default {
       })
 
       this.$server.check.uploadEyePhoto(formData).then(({data})=>{
-        this.$pageTo('#page-left', '选择左眼症状', 'replace')
+        this.$pageTo('#page-left', '选择左眼症状')
       }).finally(()=>{
         this.$storage.session.set('eyeImages', this.eyeImages)
         this.$mui.hideWaiting()
       })
     },
     getEyeResult() {
-      this.$link('/check/body#page-question', 'page-in', 'replace')
+      this.$link('/check/body#page-question', 'page-in')
+
+      // let formData = {
+      //   pupilsProblem: []
+      // }
+
+      // let mergeZz = this.leftZz.data.map((item, index)=>{
+      //   return Object.assign([], item, this.rightZz.data[index]).filter((_item)=>{
+      //     return !!_item
+      //   })
+      // })
+
+      // mergeZz.every((item, index)=>{
+      //   if(item.length > 0){
+      //     formData.pupilsProblem.push({
+      //       pupilsAreaNum: index+1,
+      //       description: item.join(',')
+      //     })  
+      //   }
+      //   return true
+      // })
+
+      // formData.pupilsProblem = window.JSON.stringify(formData.pupilsProblem)
+
+      // this.$mui.showWaiting()
+      // this.$server.check.eyeResult(formData).then(({data})=>{
+      //   this.resultList = data || []
+      //   this.$pageTo('#page-result', '瞳诊结果')
+      // }).finally(()=>{
+      //   this.$mui.hideWaiting()
+      // })
     }
   },
-  // beforeRouteUpdate(to, from, next) {
-  //   switch(to.hash){
-  //     case '#page-pz':
-  //       let eyeImages = this.$storage.session.get('eyeImages')
-  //       eyeImages && (this.eyeImages = eyeImages)
-  //       break
-  //     case '#page-left':
-  //       let leftZzData = this.$storage.session.get('leftZzData')
-  //       leftZzData && (this.leftZz.data = leftZzData)
-  //       break
-  //     case '#page-right':
-  //       let rightZzData = this.$storage.session.get('rightZzData')    
-  //       rightZzData && (this.rightZz.data = rightZzData)
-  //       break
-  //   }
-  //   next()
-  // },
   created() {
     let eyeImages = this.$storage.session.get('eyeImages')
     let leftZzData = this.$storage.session.get('leftZzData')
@@ -607,32 +597,6 @@ export default {
 }
 </script>
 <style scoped lang="less">
-.l-Q-item{
-  margin-bottom: 0.75rem; 
-  ._hd{
-    h3{display: inline-block; padding: 0.25rem 3rem 0.25rem 0.75rem; background: #64c4a8; border-radius: 0 1rem 1rem 0; color: #fff;}
-  }
-  ._hd:after{
-    content: ''; display: inline-block; vertical-align: -0.1rem; border: 0.25rem solid transparent; border-top-color: #fff; margin-left: -1.4rem;
-    transform: rotate(0); 
-    transform-origin: 50% 25%;
-  }
-  ._bd{overflow: hidden; height: 0;}
-  li{font-size: 0.75rem; margin-bottom: 0.5rem;padding-right: 0.75rem;}
-}
-.l-Q-item._show {
-  ._hd:after{transform: rotate(180deg);}
-  ._bd{height: auto !important;}
-} 
-._start-btn{
-  border-radius: 50%; border: 1px solid #64c4a8; 
-  box-shadow: inset 0 0 0 2px #fff, 0 0 5px 1px #64c4a8;
-  width: 4rem; height: 4rem; background: #64c4a8; color: #fff; 
-}
-._start-btn:active{
-  background: #64c4a8;
-  box-shadow: inset 0 0 0 2px #fff, 0 0 5px 1px #64c4a8, 0 0 25px 1px #64c4a8;
-}
 .l-result-goods{
   background:#fff; padding:0.5rem 1rem; margin: 1rem; border-radius: 0.5rem; border: 1px solid #efefef;
 }

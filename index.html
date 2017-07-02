@@ -27,7 +27,7 @@
   <meta Http-Equiv="Expires" Content="0">
   <meta Http-Equiv="Pragma-directive: no-cache">
   <meta Http-Equiv="Cache-directive: no-cache">
-  <title>U视一号商城</title>
+  <title>U视一号</title>
   <script>
   if(!/micromessenger/i.test(navigator.userAgent)){
     window.location.replace('https://www.ushiyihao.com/open-in-weixin.html')
@@ -283,7 +283,7 @@
   var loadedTime = Number(window.localStorage.getItem('_usee_client_loading_time') || 0) - Date.now()
   if (loadedTime < 0) {
     window.localStorage.setItem('_usee_client_loading_start', Date.now())
-    window.localStorage.setItem('_usee_client_loading_time', Date.now() + 1000 * 3600 * 12)
+    window.localStorage.setItem('_usee_client_loading_time', Date.now() + 1000 * 3600 * 24 * 7)
     var loader = document.getElementById('app-loader');
     if (loader) {
       loader.style.display = 'block'
