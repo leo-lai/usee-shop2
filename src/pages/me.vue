@@ -148,6 +148,7 @@ export default {
     //     this.$mui.hideWaiting()
     //   })
     // }
+    this.userInfo = this.$storage.local.get('userInfo') || {}
     this.getUserInfo()
   }
 }

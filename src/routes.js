@@ -49,6 +49,18 @@ const routes = [
     component: me
   },
   {
+    path: '/news',
+    name: 'news',
+    meta: { title: '文章资讯', auth: false},
+    component: (resolve) => require(['./pages/news'], resolve)
+  },
+  {
+    path: '/news/info/:id',
+    name: 'news-info',
+    meta: { title: '文章资讯详情', auth: false},
+    component: (resolve) => require(['./pages/news-info'], resolve)
+  },
+  {
     path: '/check/body',
     name: 'check-body',
     meta: { title: 'U视门诊'},

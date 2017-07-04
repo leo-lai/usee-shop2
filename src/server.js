@@ -262,9 +262,10 @@ const _server = {
         reject('请使用微信浏览器支付')
         return
       }
+
+      mui.showWaiting('正在支付...')
       this.getWxConfig().then((wx) => {
         if (wx._ready) {
-          mui.showWaiting('正在支付...')
           this.getWxPayConfig(formData).then((data) => {
             wx.chooseWXPay({
               timestamp: data.timeStamp,
@@ -283,12 +284,14 @@ const _server = {
                 } else {
                   resolve('支付回调成功')
                 }
-              }
+              },
+              fail: (err) => { return reject(err.errMsg) }
             })
-          }).catch(reject).finally(()=>{
+          }).finally(()=>{
             mui.hideWaiting()
           })
         } else {
+          mui.hideWaiting()
           reject('微信JS-SDK授权异常')
         }
       })
@@ -346,7 +349,6 @@ const _server = {
         } else {
           reject('微信JS-SDK授权异常')
         }
-      }).finally(() => {
         mui.hideWaiting()
       })
     })
@@ -363,14 +365,11 @@ const _server = {
             success: function (res) {
               resolve(res.localIds)
             },
-            fail(err) {
-              reject(err.errMsg)
-            }
+            fail: (err) => { return reject(err.errMsg) }
           })
         } else {
           reject('微信JS-SDK授权异常')
         }
-      }).finally(() => {
         mui.hideWaiting()
       })
     })
@@ -429,24 +428,16 @@ const _server = {
       }(localIds)
     })
   },
-  wxShare(shareInfo) {
-    let userInfo = _server.user.getInfo()
-    shareInfo = shareInfo || {
-      title: '我为U视喷喷代言',
-      desc: '喷3次，停3秒，眨3下，U视喷喷9秒靓眼。',
-      link: _server.getHost() + '/shop?_from=scan&_qruc=' + userInfo.userCode,
-      imgUrl: userInfo.avatar
-    }
+  wxShare(shareInfo = {
+    title: '我为U视喷喷代言',
+    desc: '喷3次，停3秒，眨3下，U视喷喷9秒靓眼，随时随地，想喷就喷。',
+    link: _server.getHost()
+  }) {
     return new Promise((resolve, reject) => {
       mui.showWaiting()
       this.getWxConfig().then((wx) => {
         if (wx._ready) {
-          let _info = {
-            title: shareInfo.title,             // 分享标题
-            desc: shareInfo.desc,
-            link: shareInfo.link,               // 分享链接
-            imgUrl: shareInfo.imgUrl            // 分享图标
-          }
+          let _info = Object.assign({}, shareInfo)
           wx.onMenuShareTimeline(_info)
           wx.onMenuShareAppMessage(_info)
           wx.onMenuShareQQ(_info)
@@ -454,9 +445,8 @@ const _server = {
 
           resolve(wx)
         }else{
-          utils.device.isWechat && reject('微信JS-SDK授权异常')
+          reject('微信JS-SDK授权异常')
         }
-      }).finally(() => {
         mui.hideWaiting()
       })
     })
@@ -1045,6 +1035,23 @@ const _server = {
     },
     getReportInfo(uuidCode) {
       return _http.post('/pupilsDiagnosis/pupilsAndConstitutionInfo', {uuidCode})
+    }
+  },
+  news: {
+    getList(page = 1, rows = 10) {
+      return _http.post('/websiteNews/websiteNewsSharList', {
+        page, rows
+      }).then((response) => {
+        !response.data && (response.data = {})
+        response.data.rows = rows
+        return response
+      })
+    },
+    getInfo(newsId = '', userCode = '') {
+      return _http.post('/websiteNews/websiteNewsShareInfo', {newsId, userCode})
+    },
+    share(newsId = '', userCode = '') {
+      return _http.post('/websiteNews/websiteNewsWechatShare', {newsId, userCode})
     }
   }
 }

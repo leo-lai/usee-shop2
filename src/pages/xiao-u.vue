@@ -10,7 +10,7 @@
         <div class="l-card-count l-text-center">
           <p class="l-fs-s">账户余额(元)</p>  
           <p style="font-size:2rem; margin: 0.5rem 0;">{{xiaoUInfo.readyAmount | currency}}</p>
-          <p><button style="background: transparent; border-color: #fff;" class="mui-btn l-btn-main _m" @click="$link('/me/account', 'page-in')">查看</button></p>
+          <p><button style="background: transparent; border-color: #fff; min-width: 40%;" class="mui-btn l-btn-main _m" @click="$link('/me/account', 'page-in')">查看</button></p>
         </div>
         <div class="l-flex-hc l-bg-white l-text-center" style="padding: 1rem 0;">
           <div class="l-rest" @click="$link('/me/rebate', 'page-in')">
@@ -25,6 +25,9 @@
         <ul class="mui-table-view mui-table-view-chevron l-margin-t">
           <li class="mui-table-view-cell" @click="$link('/me/qrcode', 'page-in')"> 
             <span class="mui-navigate-right">我的二维码</span>
+          </li>
+          <li class="mui-table-view-cell" @click="$link('/news', 'page-in')">
+            <span class="mui-navigate-right">文章资讯</span>
           </li>
           <li class="mui-table-view-cell" @click="$link('/me/xiaou/rule', 'page-in')">
             <span class="mui-navigate-right">规则说明</span>
