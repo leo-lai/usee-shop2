@@ -1,9 +1,6 @@
 Promise.prototype.done = Promise.prototype.done || function (onFulfilled, onRejected) {
   this.then(onFulfilled, onRejected)
-    .catch(function (reason) {
-      // 抛出一个全局错误
-      setTimeout(() => { throw reason }, 0)
-    })
+      .catch( reason => setTimeout(() => { throw reason }, 0) )
 }
 Promise.prototype.finally = Promise.prototype.finally || function (callback) {
   let P = this.constructor
@@ -49,13 +46,13 @@ Number.prototype.toMoney = function(places, symbol = '', thousand = ',', decimal
 */
 Date.prototype.format = function (fmt) {
   var o = {
-      "M+": this.getMonth() + 1, //月份 
-      "d+": this.getDate(), //日 
-      "h+": this.getHours(), //小时 
-      "m+": this.getMinutes(), //分 
-      "s+": this.getSeconds(), //秒 
-      "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
-      "S": this.getMilliseconds() //毫秒 
+    "M+": this.getMonth() + 1, //月份 
+    "d+": this.getDate(), //日 
+    "h+": this.getHours(), //小时 
+    "m+": this.getMinutes(), //分 
+    "s+": this.getSeconds(), //秒 
+    "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+    "S": this.getMilliseconds() //毫秒 
   }
   if (/(y+)/.test(fmt)) {
     fmt = fmt.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length))
@@ -157,7 +154,7 @@ export let storage = {
     },
     get(key) {
       if(!key) return ''
-      return JSON.parse(window.sessionStorage.getItem(STORE_PREFIX + key))
+      return JSON.parse(window.sessionStorage.getItem(STORE_PREFIX + key)) || ''
     },
     remove(key) {
       if(!key) return false
@@ -195,7 +192,7 @@ export let storage = {
 }
 /*========utils小工具===========*/
 // 参考jq源码
-let toptipTimeid = null
+
 const class2type = (function(){
   let ret = {}
   'Boolean Number String Function Array Date RegExp Object Error'.split(' ').forEach((name) => {
@@ -419,7 +416,7 @@ export let utils = {
       return src.replace(/\/0$/, '/' + size)
     }
   },
-  toptip(text, ms = 3000) {
+  toptip(text = '', ms = 3000) {
     if(!text) return
     let toptip = document.querySelector('#l-toptip')
     if(!toptip){
@@ -429,10 +426,10 @@ export let utils = {
       document.body.appendChild(toptip)
     }
     
-    clearTimeout(toptipTimeid)
+    clearTimeout(this.toptipTimeid)
     toptip.innerHTML = text
     toptip.classList.add('_show')
-    toptipTimeid = setTimeout(function(){
+    this.toptipTimeid = setTimeout(function(){
       toptip.classList.remove('_show')
     }, ms)
   },
@@ -452,7 +449,7 @@ export let utils = {
     let waiting = document.querySelector('#l-waiting')
     waiting && waiting.classList.add('_hide')
   },
-  convertImgToBase64(url, callback, outputFormat){
+  convertImgToBase64(url = '', callback, outputFormat){
     var canvas = document.createElement('canvas'),
       ctx = canvas.getContext('2d'),
       img = new Image

@@ -10,19 +10,24 @@ import server from './server'
 import routes from './routes'
 import App from './App'
 
+window.Vue = Vue
+
+// 解决移动端点击延迟
+FastClick.attach(document.body)
+
+// 图片懒加载
+Vue.use(VueLazyload, {
+  lazyComponent: true
+})
+
+// 货币数字过滤器 123456789.99 -> 123,456,789.99
 Vue.filter('currency', (value = '')=>{
   let number = +(value+'').replace(/[^-\d.]/g, '')
   number = isNaN(number) ? 0 : number
   return number.toMoney(2)
 })
 
-Vue.use(VueLazyload, {
-  lazyComponent: true
-})
-
-FastClick.attach(document.body)
-
-// // mui扩展插件
+// mui扩展插件
 mui.use = function(plugName){
   mui.isFunction(plugName) && plugName(mui, window, document, undefined)
 }
@@ -57,19 +62,19 @@ router.beforeEach((to, from, next) => {
   
   if(auth && !storage.session.get('sessionId')){
     if(openId || code){
-
-      mui.showWaiting()
+      mui.showWaiting('正在加载')
       return server.user.login({code}).finally(()=>{
         next()
         mui.hideWaiting()
       })
-    }else if(utils.device.isWechat){
-      window.location.replace(server.getGrantUrl(to.fullPath, undefined, 'snsapi_userinfo'))
+    }else{
+      utils.device.isWechat && window.location.replace(server.getGrantUrl(to.fullPath, undefined, 'snsapi_userinfo'))
       return next(false)
     }
   }
 
-  code && storage.session.set('wx_url', window.location.href)
+  // 微信网页授权保存Landing Page，用于IOS微信JSSDK授权路径
+  code && storage.session.set('Landing_Page', window.location.href)
   next()
 })
 
@@ -166,7 +171,7 @@ router.beforeEach((to, from, next) => {
     // $.showIndicator()
   }
 
-  setTimeout(next, 60)
+  setTimeout(next)
 })
 
 router.afterEach((to) => {
@@ -188,13 +193,13 @@ router.afterEach((to) => {
         utils.addClass(pageGroup[pageGroup.length - 1].querySelector('.l-page'), '_active')  
       }
     }
-  }, 90)
+  })
 })
 
 router.onReady(()=>{
+  // 记录微信的Landing Page，用于当前目录地址授权验证
   setTimeout(()=>{
-    // 记录微信的Landing Page，用于当前目录地址授权验证
-    storage.session.set('wx_url', window.location.href)
+    storage.session.set('Landing_Page', window.location.href)
     mui.init()
     mui(document).on('click', '._nav-back', function(e){
       router.back()
@@ -202,7 +207,7 @@ router.onReady(()=>{
     mui(document).on('click', '._nav-reload', function(e){
       utils.url.reload()
     })
-  }, 120) 
+  }, 100)
 })
 
 Vue._link = link
@@ -211,10 +216,22 @@ Vue._eventHub = eventHub
 
 Vue.mixin({
   created() {
+    // 跳转第三方链接方法
     this.$link = link
+    // 内页间转场方法
     this.$pageTo = pageTo
+    // vue事件中心
     this.$eventHub = eventHub
+    // mui框架
     this.$mui = mui
+    // 小工具
+    this.$utils = utils
+    // url操作
+    this.$url = utils.url
+    // 设备判断 
+    this.$device = utils.device
+    // 本地缓存
+    this.$storage = storage
   }
 })
 
@@ -245,7 +262,7 @@ function pageTo(toPageId, title, type = 'push'){
       router.currentRoute.meta.type = ''
       utils.removeClass(fromPage, 'page-in-leave-active')
       utils.removeClass(toPage, 'page-in-enter-active')
-    }, 600)
+    }, 700)
   }
 }
 // 内页返回
@@ -262,7 +279,7 @@ function pageBack(toPageId, title){
     pageBack.timeid = setTimeout(()=>{
       utils.removeClass(fromPage, 'page-out-leave-active')
       utils.removeClass(toPage, 'page-out-enter-active')
-    }, 600)
+    }, 700)
   }
 }
 // 跳转

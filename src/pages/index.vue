@@ -97,7 +97,7 @@ export default {
       setTimeout(()=>{
         this.goodsList = data
         this.loading = false
-      }, 600)
+      }, 700)
     }).catch(()=>{
       this.loading = false
     })

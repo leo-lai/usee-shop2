@@ -303,7 +303,7 @@ export default {
         setTimeout(()=>{
           this.checkResult = this.resultFormat(data)
           this.$pageTo('#page-result', '上次检测结果')
-        }, 600)
+        }, 700)
       }
     }).finally(()=>{
       this.getBodyQuestion()

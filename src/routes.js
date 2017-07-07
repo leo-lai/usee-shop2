@@ -96,30 +96,30 @@ const routes = [
     meta: { title: '小U店长'},
     component: (resolve) => require(['./pages/xiao-u'], resolve)
   },
-  {
-    path: '/login',
-    name: 'login',
-    meta: { title: '登录' },
-    component: (resolve) => require(['./pages/login'], resolve)
-  },
-  {
-    path: '/register',
-    name: 'register',
-    meta: { title: '注册' },
-    component: (resolve) => require(['./pages/register'], resolve)
-  },
-  {
-    path: '/forgot',
-    name: 'forgot',
-    meta: { title: '找回密码' },
-    component: (resolve) => require(['./pages/pwd'], resolve)
-  },
-  {
-    path: '/antifake',
-    name: 'antifake',
-    meta: { title: '防伪查询' },
-    component: (resolve) => require(['./pages/antifake'], resolve)
-  },
+  // {
+  //   path: '/login',
+  //   name: 'login',
+  //   meta: { title: '登录' },
+  //   component: (resolve) => require(['./pages/login'], resolve)
+  // },
+  // {
+  //   path: '/register',
+  //   name: 'register',
+  //   meta: { title: '注册' },
+  //   component: (resolve) => require(['./pages/register'], resolve)
+  // },
+  // {
+  //   path: '/forgot',
+  //   name: 'forgot',
+  //   meta: { title: '找回密码' },
+  //   component: (resolve) => require(['./pages/pwd'], resolve)
+  // },
+  // {
+  //   path: '/antifake',
+  //   name: 'antifake',
+  //   meta: { title: '防伪查询' },
+  //   component: (resolve) => require(['./pages/antifake'], resolve)
+  // },
   {
     path: '/about',
     name: 'about',
@@ -210,6 +210,11 @@ const routes = [
     path: '/me/xiaou/rule',
     meta: { title: '规则说明'},
     component: (resolve) => require(['./pages/xiaou-rule'], resolve)
+  },
+  {
+    path: '/pay/sys',
+    meta: { title: '员工收款'},
+    component: (resolve) => require(['./pages/pay-sys'], resolve)
   },
   {
     path: '*',

@@ -29,24 +29,14 @@
   <meta Http-Equiv="Cache-directive: no-cache">
   <title>U视一号</title>
   <script>
-  if(!/micromessenger/i.test(navigator.userAgent)){
+  if(window.location.host !== '192.168.0.88:8080' && !/micromessenger/i.test(navigator.userAgent)){
     window.location.replace('https://www.ushiyihao.com/open-in-weixin.html')
   }
   </script>
   <style id="app-loader-css" type="text/css">
-  html,
-  body {
-    margin: 0;
-  }
-  
-  html {
-    font-size: 20px;
-  }
-  
-  body {
-    font-family: 'Helvetica Neue', Helvetica, sans-serif;
-    line-height: 1.6;
-  }
+  html, body {margin: 0; }
+  html {font-size: 20px; }
+  body {font-family: 'Helvetica Neue', Helvetica, sans-serif; line-height: 1.6; }
   
   #app-loader {
     position: absolute;
@@ -213,13 +203,9 @@
     /* Firefox 16+, IE 10+, Opera */
   }
   
-  .loader-section.section-left {
-    left: 0;
-  }
+  .loader-section.section-left {left: 0; }
   
-  .loader-section.section-right {
-    right: 0;
-  }
+  .loader-section.section-right {right: 0; }
   /* Loaded */
   
   .app-loaded .loader-section.section-left {

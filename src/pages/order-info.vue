@@ -184,7 +184,7 @@ export default {
       this.$server.order.getInfo(this.$route.params.id).then(({data})=>{
         setTimeout(()=>{
           this.orderInfo = data[0] || data  
-        }, 600)
+        }, 700)
       }).finally(()=>{
         this.$mui.hideWaiting()
       })

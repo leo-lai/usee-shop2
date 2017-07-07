@@ -227,7 +227,7 @@ export default {
 
           this.calu()
           this.loading = false
-        }, 600)
+        }, 700)
       }).catch(()=>{
         this.loading = false
       })  

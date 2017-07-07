@@ -78,7 +78,7 @@ export default {
               }, false)  
             }
           })
-        }, 600)
+        }, 700)
       })
     }
   },

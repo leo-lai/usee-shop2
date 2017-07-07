@@ -56,7 +56,7 @@ export default {
     this.success = this.$storage.session.get('temp_pay_result') == 1 ? true : false
     setTimeout(()=>{
       this.isAgent = this.$storage.session.get('buy_become_agent') == 1 ? true : false
-    }, 600)
+    }, 700)
   }
 }
 </script>

@@ -26,7 +26,7 @@ const _http = {
   ajax(url = '', data = {}, type = 'GET', contentType = 'form') {
     url = baseUrl + url
     let headers = {
-      // 'sessionId': storage.session.get('sessionId') || '',
+      // 'sessionId': storage.session.get('sessionId'),
       'Content-Type': 'application/x-www-form-urlencoded'
     }
 
@@ -34,13 +34,13 @@ const _http = {
       // headers['Content-Type'] = 'text/plain'
       data = JSON.stringify(data)
     }
-    let openId = storage.local.get('openId') || ''
+    let openId = storage.local.get('openId')
     if(openId && utils.isPlainObject(openId)){
       openId = openId.openId || ''
       storage.local.set('openId', openId)
     }
 
-    data.sessionId = storage.session.get('sessionId') || ''
+    data.sessionId = storage.session.get('sessionId')
     data.openId = openId
 
     return new Promise((resolve, reject) => {
@@ -133,14 +133,15 @@ const _server = {
       } 
     })
   },
-  // 获取微信授权路径 url为绝对路径
+  // 获取微信授权路径
   getGrantUrl(url = '', params = {}, scope = 'snsapi_base') {
     url = utils.url.setArgs(url, Object.assign({}, params, {code: undefined}))
 
-    if(!/^http(s?)/i.test(url)){
+    if(!/^http(s?)/i.test(url)){ // 如果路径没带域名，加上
       url = window.location.origin + url
     }
 
+    // 转码路径中的特殊字符 如：/ 转换成 %2F
     url = url.replace(/[\?&=#,]/ig, ($1)=>encodeURIComponent($1))
 
     // return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`
@@ -148,7 +149,7 @@ const _server = {
   },
   // 获取jssdk授权配置 promise返回一个对象(wx or {})
   getWxConfig(url) {
-    url = url || (utils.device.isIos && utils.device.isWechat ? storage.session.get('wx_url') : window.location.href)
+    url = url || (utils.device.isIos && utils.device.isWechat ? storage.session.get('Landing_Page') : window.location.href)
     url = url.split('#')[0]
 
     const self = this
@@ -188,7 +189,7 @@ const _server = {
             if (res.errMsg === 'config:invalid signature' && !window.wx._try) {
               window.wx._ready = false
               window.wx._try = true
-              resolve(self.getWxConfig(utils.device.isIos ? window.location.href : storage.session.get('wx_url')))
+              resolve(self.getWxConfig(utils.device.isIos ? window.location.href : storage.session.get('Landing_Page')))
             } else {
               resolve(window.wx)
             }
@@ -217,7 +218,7 @@ const _server = {
                 if(!_configOk && !window.wx._try){
                   window.wx._ready = false
                   window.wx._try = true
-                  resolve(self.getWxConfig(utils.device.isIos ? window.location.href : storage.session.get('wx_url')))
+                  resolve(self.getWxConfig(utils.device.isIos ? window.location.href : storage.session.get('Landing_Page')))
                 }else{
                   window.wx._ready = true
                   resolve(window.wx)
@@ -662,7 +663,7 @@ const _server = {
   // 登录
   login(type, formData = {}) {
     var url = type == 1 ? '/shopUsers/loginPassword' : '/shopUsers/loginCode'
-    formData.qrUserCode = storage.session.get('bind_qrcode') || ''
+    formData.qrUserCode = storage.session.get('bind_qrcode')
     return _http.post(url, formData).then((response) => {
       !response.data && (response.data = {})
       response.data.avatar = utils.image.wxHead(response.data.image)
@@ -673,7 +674,7 @@ const _server = {
   },
   // 注册
   register(formData = {}) {
-    formData.qrUserCode = storage.session.get('bind_qrcode') || ''
+    formData.qrUserCode = storage.session.get('bind_qrcode')
     return _http.post('/shopUsers/register', formData).then((response) => {
       !response.data && (response.data = {})
       response.data.avatar = utils.image.wxHead(response.data.image)
@@ -904,8 +905,8 @@ const _server = {
       })
     },
     bind(qrUserCode = '', code = '') {
-      qrUserCode = qrUserCode || storage.session.get('bind_qrcode') || ''
-      code = code || storage.session.get('wx_code') || ''
+      qrUserCode = qrUserCode || storage.session.get('bind_qrcode')
+      code = code || storage.session.get('wx_code')
 
       if(!code) {
         return errorPromise({
@@ -1057,20 +1058,7 @@ const _server = {
 }
 Vue.mixin({
   created() {
-    // 接口
     this.$server = _server
-
-    // 小工具
-    this.$utils = utils
-
-    // url操作
-    this.$url = utils.url
-
-    // 设备判断 
-    this.$device = utils.device
-    
-    // 本地缓存
-    this.$storage = storage
   }
 })
 export default _server
