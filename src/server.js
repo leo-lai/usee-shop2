@@ -149,7 +149,7 @@ const _server = {
   },
   // 获取jssdk授权配置 promise返回一个对象(wx or {})
   getWxConfig(url) {
-    url = url || (utils.device.isIos && utils.device.isWechat ? storage.session.get('Landing_Page') : window.location.href)
+    url = url || (utils.device.isIos && utils.device.isWechat ? storage.session.get('Landing_Page') : window.location.href) || window.location.href
     url = url.split('#')[0]
 
     const self = this
@@ -437,7 +437,9 @@ const _server = {
     return new Promise((resolve, reject) => {
       mui.showWaiting()
       this.getWxConfig().then((wx) => {
-        if (wx._ready) {
+        mui.hideWaiting()
+
+        // if (wx._ready) {
           let _info = Object.assign({}, shareInfo)
           wx.onMenuShareTimeline(_info)
           wx.onMenuShareAppMessage(_info)
@@ -445,10 +447,9 @@ const _server = {
           wx.onMenuShareQZone(_info)
 
           resolve(wx)
-        }else{
-          reject('微信JS-SDK授权异常')
-        }
-        mui.hideWaiting()
+        // }else{
+        //   reject('微信JS-SDK授权异常')
+        // }
       })
     })
   },
@@ -655,7 +656,7 @@ const _server = {
     // storage.local.remove('openId')
     storage.local.remove('qrcode_img')
     storage.local.remove('buy_slted_address')
-  },
+  }, 
   // 检测登录
   checkLogin() {
     return storage.session.get('sessionId')
@@ -701,6 +702,15 @@ const _server = {
       !response.data && (response.data = {})
       return response
     })
+  },
+  getQuestionnaire(projectId = '') { // 问卷调查
+    return _http.post('/questionnaire/getQuestionnaire', {projectId}).then((response) => {
+      !response.data && (response.data = [])
+      return response
+    })
+  },
+  submitQuestionnaire(formData) { // 问卷调查
+    return _http.post('/questionnaire/answer', formData)
   },
   // 地址
   address: {
@@ -994,6 +1004,11 @@ const _server = {
         }
         return response
       })
+    },
+    getXiaoUExpress(deliveryCode = '') {
+      return _http.post('/agentInfoU/deliveryExpress', {
+        deliveryCode
+      })
     }
   },
   agent: { 
@@ -1053,6 +1068,32 @@ const _server = {
     },
     share(newsId = '', userCode = '') {
       return _http.post('/websiteNews/websiteNewsWechatShare', {newsId, userCode})
+    }
+  },
+  pay: {
+    getPayCode(formData = {}) {
+      return _http.post('/receivables/getPayQR', formData).then((response) => {
+        !response.data && (response.data = {})
+        return response
+      })
+    },
+    getRecord(page = 1, rows = 10) {
+      return _http.post('/receivables/receivablesList', {
+        page, rows
+      }).then((response) => {
+        !response.data && (response.data = {})
+        response.data.rows = rows
+        return response
+      })
+      
+    }
+  },
+  movie: {
+    get(formData = {}) {
+      return _http.post('/filmfestival/getTicket', formData)
+    },
+    getTicketInfo(formData = {}) {
+      return _http.post('/filmfestival/getTicketInfo', formData)
     }
   }
 }

@@ -49,6 +49,8 @@ export default {
             that.$mui.toast('分享成功')
           })
         }
+      }).finally(()=>{
+        this.$mui.hideWaiting()
       })
     }).finally(()=>{
       this.loading = false

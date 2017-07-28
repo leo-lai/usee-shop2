@@ -25,7 +25,7 @@
 
           <p class="l-text-gray l-fs-m" style="margin-top:2rem;">支付方式</p>
           <div class="_slt">
-            <select v-model="form.payWay">
+            <select v-model="form.channel">
               <option :value="item.value" v-for="item in data.payWay">{{item.label}}</option>
             </select>
             <span>{{payText}}</span>
@@ -34,25 +34,44 @@
         <div class="l-margin">
           <button type="button" class="mui-btn l-btn-main2" @click="pay">收款</button>
         </div>
-        <p class="l-text-gray l-fs-m l-text-center">历史收款记录</p>
+        <p class="l-text-gray l-fs-m l-text-center" @click="$link('/pay/sys/record', 'page-in')">历史收款记录</p>
         <br>
       </div>
     </div>
     <div class="l-page" id="page-qr">
-      
+      <header class="mui-bar mui-bar-nav l-black" v-if="!$device.isWechat">
+        <h1 class="mui-title">收款二维码</h1>
+        <a class="mui-icon mui-icon-arrowleft mui-pull-left _nav-back"></a>
+      </header>
+      <div class="mui-content" style="padding:1rem;text-align:center;" :class="payWayClass.cls">
+        <br> <br>
+        <h3 class="l-margin l-fs-l">本次支付金额：{{form.amount | currency}}元</h3>
+        <div class="l-qrcode-img">
+          <div class="canvas" ref="qrcode">
+            <qrcanvas :options="qrcodeObj"></qrcanvas>
+          </div>
+          <img :src="qrcodeImg" alt="">
+        </div>
+        <p class="l-margin">打开{{payWayClass.text}}[扫一扫]</p>
+        <p class="l-fs-s">客户扫码支付结果将通过公众号消息推送通知</p>
+      </div>
     </div>
     <number-keyboard ref="numberKeyboard"></number-keyboard>
   </div>
 </template>
 <script>
 import NumberKeyboard from 'components/number-keyboard'
+import Qrcanvas from 'qrcanvas-vue'
 
+let logo = require('assets/images/logo.jpg')
 export default {
   components: {
-    NumberKeyboard
+    NumberKeyboard, Qrcanvas
   },
   data () {
     return {
+      qrcodeObj: {},
+      qrcodeImg: '',
       data: {
         payWay: [
           {
@@ -69,12 +88,15 @@ export default {
         remark: [
           {
             slted: false,
+            value: 1,
             label: '小U资格费'
           },{
             slted: false,
+            value: 2,
             label: '合伙人资格费'
           },{
             slted: false,
+            value: 3,
             label: '购买商品'
           }
         ]
@@ -92,6 +114,19 @@ export default {
     payText() {
       let _temp = this.data.payWay.filter(item=>item.value === this.form.channel)
       return _temp.length > 0 ? _temp[0].label : '请选择'
+    },
+    payWayClass() {
+      let _payWayClass = {
+        cls: '',
+        text: 'App'
+      }
+      _payWayClass.cls = 'l-' + this.form.channel
+      if(this.form.channel === 'wx_pub_qr'){
+        _payWayClass.text = '微信'
+      }else if(this.form.channel === 'alipay_qr'){
+        _payWayClass.text = '支付宝'
+      }
+      return _payWayClass
     }
   },
   methods: {
@@ -100,32 +135,133 @@ export default {
     },
     sltRemark(item) {
       item.slted = !item.slted
+      let _purpose = []
+      this.data.remark.map((item)=>{
+        if(item.slted){
+          _purpose.push(item.label)
+        }
+      })
+
+      this.form.purpose = _purpose.join(',')
     },
     pay() {
-      if(this.form.channel === 'unline'){
+      this.form.amount = Number(this.payMoney)
+      if(Number.isNaN(this.form.amount) || this.form.amount <= 0){
+        this.$mui.toptip('请输入收款金额')
+        this.showKeyboard(this.$refs.payMoney)
+        return
+      }
+
+      if(!this.form.purpose){
+        this.$mui.toptip('请选择收款备注')
+        return 
+      }
+
+      if(this.form.channel === 'pos'){
         this.$mui.confirm('本次收款选择POS机刷卡，请确认是否已收到款项，再点击"转账成功"操作。', '', ['取消', '转账成功'], (e)=>{
           if(e.index == 1){
-
+            this.paySubmit()
           }
-        })  
+        })
       }else{
-        this.form.amount = Number(this.payMoney)
-        if(Number.isNaN(this.form.amount) || this.form.amount <= 0){
-          this.$mui.toptip('请输入收款金额')
-          this.showKeyboard(this.$refs.payMoney)
-          return
-        }
+        this.paySubmit()
       }
+    },
+    paySubmit() {
+      this.$mui.showWaiting()
+      this.$server.pay.getPayCode(this.form).then(({data})=>{
+        if(this.form.channel === 'pos'){
+          this.$mui.toast('转账成功')
+          this.$link('/pay/sys/record', 'page-in')
+        }else{
+          if(data && data.credential){
+            this.$storage.session.set('payData', data)
+            this.payData = data
+            this.createQrcode()
+            this.$pageTo('#page-qr', '收款二维码')  
+          }else{
+            this.$mui.toast('系统生成支付二维码失败，请稍后重试！')
+          }
+        }
+      }).finally(()=>{
+        this.$mui.hideWaiting()
+      })
+    },
+    convertToImage(){
+      const qrcodeCanvas = this.$refs.qrcode.children[0]
+      if(!qrcodeCanvas) return ''
+
+      const type = 'image/png'
+      // let imageData = qrcodeCanvas.toDataURL(type).replace(type, 'image/octet-stream') || ''
+      let imageData = qrcodeCanvas.toDataURL(type) || ''
+      return imageData
+    },
+    createQrcode(imageData) {
+      const self = this
+      let promise = new Promise((resolve)=>{
+        let logoImage = new Image()
+        logoImage.onload = function(){
+          resolve(logoImage)
+        }
+        logoImage.onerror = function(){
+          resolve('') 
+        }
+        logoImage.src = imageData
+      })
+
+      promise.then((logoImage)=>{
+        self.qrcodeObj = Object.assign({}, {data: self.payData.credential[self.form.channel]}, {
+          // data: 'HTTPS://QR.ALIPAY.COM/FKX01574I6OXQSMR8CDM4F',
+          cellSize: 5,
+          correctLevel: 'H',
+          typeNumber: 5,
+          logo: {
+            image: logoImage,
+            fontFamily: 'Arial',
+            size: 0.15,
+            color: '#000',
+            text: 'U视一号',
+            clearEdges: 2,
+            margin: 10
+          },
+          effect: {
+            key: 'round', // image liquid round
+            value: 0.2  
+          }
+        })
+
+        self.$nextTick(()=>{
+          self.qrcodeImg = self.convertToImage()
+        })
+      })
     }
   },
   mounted() {
     this.$refs.numberKeyboard.$on('$keyboard:input', (val)=>{
       this.payMoney = val
     })
+
+    let payData = this.$storage.session.get('payData')
+    if(payData){
+      this.payData = payData
+      this.createQrcode()
+    }
   }
 }
 </script>
 <style scoped lang="less">
+.l-alipay_qr{color: #fff; background: #019fe8 url(~assets/images/alipay-logo.jpg) no-repeat 50% bottom; background-size: 100%; }
+.l-wx_pub_qr{color: #fff; background: #22ab39 url(~assets/images/wxpay-logo.jpg) no-repeat 50% bottom; background-size: 100%; }
+
+.l-qrcode-img{
+  width: 10rem; height: 10rem; margin:0 auto; text-align: center; position: relative; z-index: 1; background: #fff; padding: 0.75rem;
+  .canvas{display: none;}
+  img{width: 100%; height: 100%;}
+  &:after{
+    content: '二维码生成中...'; position: absolute; left:0; right: 0; text-align: center; top: 50%; margin-top: -0.3rem;
+    font-size: 0.6rem; color: #999; z-index: -1;
+  }
+}
 
 .l-panel-pay{
   margin: 0.75rem; background-color: #fff; padding: 1rem;

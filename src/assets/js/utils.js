@@ -406,8 +406,7 @@ export let utils = {
     },
     wxHead(src, size = 132) {
       if(!src) {
-        let avatar = require('assets/images/avatar.jpg')
-        return avatar
+        return require('assets/images/avatar.jpg')
       }
       if(src.indexOf('wx.qlogo.cn') === -1){
         return src

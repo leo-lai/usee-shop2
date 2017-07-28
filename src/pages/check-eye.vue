@@ -710,8 +710,11 @@ export default {
 }
 .l-footer-btn{
   padding: 0;
+  &:after{
+    content: ''; clear: both; height: 0; visibility: hidden; font-size: 0;
+  }
   button {
-    height: 100%; border:none; border-radius: 0;
+    height: 100%; border:none; border-radius: 0; float: left;
   }
 }
 .l-eye-picture{

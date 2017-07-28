@@ -32,6 +32,12 @@
               <input type="tel" placeholder="请填写" maxlength="11" v-model="formData.phoneNumber">
             </div>
           </div>
+          <div class="l-form-row">
+            <label>身份证号</label>
+            <div class="_rest _ipt">
+              <input type="text" readonly placeholder="请填写" maxlength="18" @click="showKeyboard($event.target)" v-model="formData.idCards">
+            </div>
+          </div>
           <div class="l-form-row _middle">
             <label>营业执照</label>
             <div class="_rest _ipt" @click="chooseImage">
@@ -203,10 +209,16 @@
         </div>
       </div>
     </div>
+
+    <number-keyboard ref="numberKeyboard" nk-type="idcard"></number-keyboard>
   </div>
 </template>
 <script>
+import NumberKeyboard from 'components/number-keyboard'
 export default {
+  components: {
+    NumberKeyboard
+  },
   data () {
     return {
       submiting: false,
@@ -216,12 +228,16 @@ export default {
         agentId: '1',
         userName: '',
         phoneNumber: '',
+        idCards: '',
         businessLicenseImage: '',
         address: ''
       }
     }
   },
   methods: {
+    showKeyboard(input) {
+      this.$refs.numberKeyboard.$emit('$keyboard:show', input)
+    },
     chooseImage() {
       this.$server.chooseImage(1).then((localIds)=>{
         this.$server.uploadImage(localIds).then(({ serverIds, images, localIds })=>{
@@ -259,6 +275,10 @@ export default {
         this.$mui.toptip('必须填写联系方式')
         return
       }
+      if(!this.formData.idCards){
+        this.$mui.toptip('必须填写身份证号')
+        return
+      }
       if(!this.formData.businessLicenseImage){
         this.$mui.toptip('必须上传营业执照')
         return
@@ -278,9 +298,10 @@ export default {
       })
     }
   },
-  created() {
-  },
   mounted() {
+    this.$refs.numberKeyboard.$on('$keyboard:input', (val)=>{
+      this.formData.idCards = val
+    })
     this.getApplyResult()
   }
 }

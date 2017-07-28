@@ -21,6 +21,17 @@
 </template>
 <script>
 module.exports = {
+  props: {
+    nkType: {
+      type: String,
+      default: 'digit' // number idcard digit
+    },
+
+    nkLength: {
+      type: Number,
+      default: 18
+    }
+  },
   data: function() {
     return {
       isShow: false,
@@ -73,29 +84,55 @@ module.exports = {
     clickKey: function(val) {
       let valArr = this.inputValue.split('.')
 
-      if(Number.isNaN(Number(val))){
-        if(val === '.'){ // 小数点
-          if(this.inputValue === ''){
-            this.inputValue = '0.'
-          }else if(valArr.length === 1){
-            this.inputValue += val
+      if(val === '-'){ // 删除键
+        this.inputValue = this.inputValue.substring(0, this.inputValue.length - 1)
+      }else{
+        if(this.inputValue.length < this.nkLength){
+          switch(val){
+            case '':
+              break
+            case '.': // 小数点
+              if(this.inputValue === ''){
+                this.inputValue = '0.'
+              }else if(valArr.length === 1){
+                this.inputValue += val
+              }
+              break
+            case 'X': // 身份证号的x
+              this.inputValue += val  
+              break
+            default:
+              if(valArr.length > 1){
+                if(valArr[1].length < 2){
+                  this.inputValue += val  
+                }
+              }else{
+                this.inputValue += val
+              }
+              break
           }
-        }else if(val === '-'){ // 删除
-          this.inputValue = this.inputValue.substring(0, this.inputValue.length - 1)
-        }
-      }else{ // 数字
-        if(valArr.length > 1){
-          if(valArr[1].length < 2){
-            this.inputValue += val  
-          }
-        }else{
-          this.inputValue += val
         }
       }
-      this.$emit('$keyboard:input', this.inputValue, this.input)
+      this.inputEvent()
     },
 
     show() {
+      switch(this.nkType){
+        case 'digit':
+          this.keys[9].label = '.'
+          this.keys[9].value = '.'
+          break
+        case 'number':
+          this.keys[9].label = ''
+          this.keys[9].value = ''
+          break
+        case 'idcard':
+          this.nkLength = 18
+          this.keys[9].label = 'X'
+          this.keys[9].value = 'X'
+          break
+      }
+
       this.isShow = true
       if(this.input && this.input.tagName){
         this.inputValue = this.input.value || this.input.innerText
@@ -104,24 +141,28 @@ module.exports = {
 
     hide() {
       this.isShow = false
-      this.$emit('$keyboard:hide', this.inputValue, this.input)
+      this.inputEvent()
     },
 
     done() {
       if(this.inputValue){
-        this.$emit('$keyboard:input', Number(this.inputValue).toFixed(2), this.input)  
+        this.inputEvent(Number(this.inputValue).toFixed(2))
       }
       this.hide()
     },
 
     clear() {
       this.inputValue = ''
-      this.$emit('$keyboard:input', this.inputValue, this.input)
+      this.inputEvent()
+    },
+    inputEvent(val) {
+      this.$emit('$keyboard:input', val || this.inputValue, this.input, this.data)
     }
   },
   mounted() {
-    this.$on('$keyboard:show', (input) => {
+    this.$on('$keyboard:show', (input, data) => {
       this.input = input
+      this.data = data
       this.show()
     })
   },
@@ -136,7 +177,7 @@ module.exports = {
 </script>
 <style scoped lang="less">
 .l-keyboard {
-  user-select: none;  position: fixed; bottom: 0; left: 0; width: 100%; z-index: 9000;
+  user-select: none;  position: absolute; bottom: 0; left: 0; width: 100%; z-index: 9000;
   ._inner{ position: relative; z-index: 1; background: #fff; } 
   &:before{
     width: 100%; height: 300%; background: rgba(0, 0, 0, 0);

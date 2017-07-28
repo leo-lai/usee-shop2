@@ -269,7 +269,7 @@
   var loadedTime = Number(window.localStorage.getItem('_usee_client_loading_time') || 0) - Date.now()
   if (loadedTime < 0) {
     window.localStorage.setItem('_usee_client_loading_start', Date.now())
-    window.localStorage.setItem('_usee_client_loading_time', Date.now() + 1000 * 3600 * 24 * 7)
+    window.localStorage.setItem('_usee_client_loading_time', Date.now() + 1000 * 3600 * 24)
     var loader = document.getElementById('app-loader');
     if (loader) {
       loader.style.display = 'block'

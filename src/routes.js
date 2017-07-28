@@ -96,6 +96,12 @@ const routes = [
     meta: { title: '小U店长'},
     component: (resolve) => require(['./pages/xiao-u'], resolve)
   },
+  {
+    path: '/me/xiaou/express/:code',
+    name: 'xiaou-express',
+    meta: { title: '物流查询'},
+    component: (resolve) => require(['./pages/xiaou-express'], resolve)
+  },
   // {
   //   path: '/login',
   //   name: 'login',
@@ -215,6 +221,26 @@ const routes = [
     path: '/pay/sys',
     meta: { title: '员工收款'},
     component: (resolve) => require(['./pages/pay-sys'], resolve)
+  },
+  {
+    path: '/pay/sys/record',
+    meta: { title: '收款记录'},
+    component: (resolve) => require(['./pages/pay-sys-record'], resolve)
+  },
+  {
+    path: '/questionnaire/:id',
+    meta: { title: 'U视一号问卷调查'},
+    component: (resolve) => require(['./pages/questionnaire'], resolve)
+  },
+  {
+    path: '/movie/:id',
+    meta: { title: 'U视一号爱眼护眼电影节'},
+    component: (resolve) => require(['./pages/movie-ssss'], resolve)
+  },
+  {
+    path: '/movie/quan/:id',
+    meta: { title: 'U视一号爱眼护眼电影节'},
+    component: (resolve) => require(['./pages/movie-quan'], resolve)
   },
   {
     path: '*',

@@ -171,7 +171,7 @@ router.beforeEach((to, from, next) => {
     // $.showIndicator()
   }
 
-  setTimeout(next)
+  setTimeout(next, 50)
 })
 
 router.afterEach((to) => {
@@ -193,7 +193,7 @@ router.afterEach((to) => {
         utils.addClass(pageGroup[pageGroup.length - 1].querySelector('.l-page'), '_active')  
       }
     }
-  })
+  }, 60)
 })
 
 router.onReady(()=>{
@@ -262,7 +262,7 @@ function pageTo(toPageId, title, type = 'push'){
       router.currentRoute.meta.type = ''
       utils.removeClass(fromPage, 'page-in-leave-active')
       utils.removeClass(toPage, 'page-in-enter-active')
-    }, 700)
+    }, 650)
   }
 }
 // 内页返回
@@ -279,7 +279,7 @@ function pageBack(toPageId, title){
     pageBack.timeid = setTimeout(()=>{
       utils.removeClass(fromPage, 'page-out-leave-active')
       utils.removeClass(toPage, 'page-out-enter-active')
-    }, 700)
+    }, 650)
   }
 }
 // 跳转
