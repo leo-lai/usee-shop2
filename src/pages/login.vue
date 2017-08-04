@@ -147,7 +147,7 @@ export default {
   mounted() {
     this.loginType = this.$storage.local.get('loginType') || 2
     this.$nextTick(()=>{
-      this.$mui('.l-login-form input').input();  
+      this.$mui('.l-login-form input').input()
     })
   }
 }

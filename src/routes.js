@@ -233,14 +233,24 @@ const routes = [
     component: (resolve) => require(['./pages/questionnaire'], resolve)
   },
   {
-    path: '/movie/:id',
+    path: '/movie/time',
     meta: { title: 'U视一号爱眼护眼电影节'},
-    component: (resolve) => require(['./pages/movie-ssss'], resolve)
+    component: (resolve) => require(['./pages/movie-time'], resolve)
   },
   {
     path: '/movie/quan/:id',
     meta: { title: 'U视一号爱眼护眼电影节'},
     component: (resolve) => require(['./pages/movie-quan'], resolve)
+  },
+  {
+    path: '/movie/:id',
+    meta: { title: 'U视一号爱眼护眼电影节'},
+    component: (resolve) => require(['./pages/movie-ssss'], resolve)
+  },
+  {
+    path: '/hexiao',
+    meta: { title: 'U视一号爱眼护眼电影节'},
+    component: (resolve) => require(['./pages/hexiao'], resolve)
   },
   {
     path: '*',

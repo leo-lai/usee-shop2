@@ -159,7 +159,7 @@ const _server = {
       timestamp: '',
       nonceStr: '',
       signature: '',
-      jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'chooseImage', 'previewImage', 'uploadImage', 'downloadImage', 'openLocation', 'getLocation', 'hideOptionMenu', 'showOptionMenu']
+      jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareWeibo', 'onMenuShareQZone', 'chooseImage', 'previewImage', 'uploadImage', 'downloadImage', 'openLocation', 'getLocation', 'hideOptionMenu', 'showOptionMenu', 'scanQRCode']
     }
 
     let promise = new Promise((resolve, reject) => {
@@ -1094,6 +1094,11 @@ const _server = {
     },
     getTicketInfo(formData = {}) {
       return _http.post('/filmfestival/getTicketInfo', formData)
+    },
+    hexiao(number) {
+      return _http.post('/filmfestival/verificationTickets', {
+        number
+      })
     }
   }
 }

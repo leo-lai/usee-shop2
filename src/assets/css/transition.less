@@ -37,6 +37,7 @@
   position: absolute; top: 0; left: 0; width: 100%; z-index: 999; 
   transform: translate3d(0, 0, 0); visibility: visible; 
 }
+
 @keyframes pageFromRightToCenter {
   from {
     transform: translate3d(100%, 0, 0);
@@ -76,5 +77,69 @@
   to {
     opacity: 1; visibility: visible;
     transform: translate3d(0, 0, 0);
+  }
+}
+
+
+.page-top-enter-active {
+  animation: pageFromTopToCenter .5s forwards; 
+  position: absolute; top: 0; left: 0; width: 100%; z-index: 999; 
+  transform: translate3d(100%, 0, 0); visibility: hidden; 
+}
+.page-top-leave-active {
+  display: block !important; 
+  animation: pageFromCenterToBottom .5s forwards; 
+}
+
+.page-bottom-enter-active {
+  animation: pageFromBottomToCenter .5s forwards; 
+  position: absolute; top: 0; left: 0; width: 100%; z-index: 999; 
+  transform: translate3d(100%, 0, 0); visibility: hidden; 
+}
+.page-bottom-leave-active {
+  display: block !important; 
+  animation: pageFromCenterToTop .5s forwards; 
+}
+
+@keyframes pageFromTopToCenter {
+  from {
+    transform: translate3d(0, 100%, 0);
+    opacity: .9;
+  }
+  to {
+    visibility: visible;
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+@keyframes pageFromCenterToBottom {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: .9; visibility: hidden;
+    transform: translate3d(0, -100%, 0);
+  }
+}
+@keyframes pageFromBottomToCenter {
+  from {
+    transform: translate3d(0, -100%, 0);
+    opacity: .9;
+  }
+  to {
+    visibility: visible;
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+@keyframes pageFromCenterToTop {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: .9; visibility: hidden;
+    transform: translate3d(0, 100%, 0);
   }
 }

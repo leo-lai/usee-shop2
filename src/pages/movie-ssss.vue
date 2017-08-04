@@ -22,7 +22,7 @@
               </div>
               <div class="l-margin-t">
                 <p class="l-text-gray">注意事项：</p>
-                <p>电影票资源珍贵，请抢到票的您务必到场（无法到场的可以将电子票券转赠朋友），否则将无法参加下次电影活动</p>
+                <p>电影票资源珍贵，请抢到票的您务必到场（无法到场的可以将电子票转赠朋友），否则将无法参加下次电影活动</p>
               </div>
             </div>
           </div>
@@ -33,7 +33,7 @@
             手机号码将用于接收电子票信息及观影提醒
           </div>
           <div style="margin: 1rem;">
-            <button :disabled="submiting" @click="submit" style="width:100%; background:#67bde3; color:#fff; border:none; padding: 0.5rem 0; font-size: 1 rem;">抢抢抢</button>
+            <button class="_blue-btn" :disabled="submiting" @click="submit">抢抢抢</button>
           </div>
           <div style="margin:1rem; font-size:0.6rem; color:#999; text-align:center;">
             本活动最终解释权归贵州优视一号生物科技有限公司所有
@@ -49,20 +49,20 @@
       <div class="mui-content" style="background:#fff;">
         <div class="l-text-center" v-if="result == 1">
           <br><br>
-          <h3 style="color:#ee5859; font-size: 1.6rem;">抢券成功</h3>
+          <h3 style="color:#ee5859; font-size: 1.6rem;">抢票成功</h3>
           <p class="l-margin-t">识别下方二维码获取电子票</p>
           <br>
           <img style="width: 10rem;" src="~assets/images/ssss-006.jpg" alt="">
           <img style="width: 9rem;" src="~assets/images/ubaby-qr.jpg" alt="">
         </div>
-        <div class="l-text-center" v-else>
+        <div class="l-text-center" v-if="result == 0">
           <br><br>
           <h3 style="color:#ee5859; font-size: 1.6rem;">抢光啦</h3>
           <p class="l-margin-t">手慢了，电影票已经被抢完了！</p>
           <br>
           <img style="width: 10rem;" src="~assets/images/ssss-005.jpg" alt="">
           <img style="width: 9rem;" src="~assets/images/ubaby-qr.jpg" alt="">
-          <p style="font-size: 0.7rem;color:#ee5859;">活动多多，关注公众号第一时间参与下次活动</p>
+          <p style="font-size: 0.7rem;color:#ee5859;">活动多多，关注公众号第一时间参与下次活动，万一下次送IPhone呢！</p>
         </div>
       </div>
     </div>
@@ -104,21 +104,37 @@ export default {
         return
       }
 
-      this.$mui.showWaiting('抢券中')
-      this.$server.movie.get(this.form).then(({data})=>{
-        this.result = data
-        if(data == 2){
-          this.$pageTo('#page-none', 'U视一号爱眼护眼电影节')
-        }else{
-          this.$pageTo('#page-result', 'U视一号爱眼护眼电影节')
-        }
-      }).finally(()=>{
-        this.$mui.hideWaiting()
-      })
+      this.$mui.showWaiting('正在抢票中')
+      setTimeout(()=>{
+        this.$server.movie.get(this.form).then(({data})=>{
+          this.$storage.session.set('movie-result', data)
+          this.result = data
+          if(data == 2){
+            this.$pageTo('#page-none', 'U视一号爱眼护眼电影节')
+          }else{
+            this.$pageTo('#page-result', 'U视一号爱眼护眼电影节')
+          }
+        }).finally(()=>{
+          this.$mui.hideWaiting()
+        })  
+      }, 1000)
     }
   },
   mounted() {
+    let that = this
     this.form.projectId = this.$route.params.id || 1
+    this.result = this.$storage.session.get('movie-result')
+    that.$server.wxShare({
+      title: '一起去看个电影吧',
+      desc: '三生三世电影票限量免费抢',
+      link: that.$server.getHost() + '/movie/' + that.$route.params.id,
+      imgUrl: 'http://opii7iyzy.bkt.clouddn.com/mall/share/sharePic.jpg',
+      success(res) {
+        that.$mui.toast('分享成功')
+      }
+    }).finally(()=>{
+      this.$mui.hideWaiting()
+    })
   }
 }
 </script>
@@ -133,5 +149,21 @@ export default {
   ._inner{
     margin:-0.5rem 1rem 0; background: #fff; font-size: 0.75rem;
   }
+}
+
+
+@keyframes bluePulse {
+  from { background-color: #29b1d0; box-shadow: 0 0 15px #07d1ff; }
+  50% { background-color: #07d1ff; box-shadow: 0 0 27px #fff; }
+  to { background-color: #29b1d0; box-shadow: 0 0 15px #07d1ff; }
+}
+
+._blue-btn{
+  width:100%; background:#29b1d0; color:#fff; border:none; padding: 0.5rem 0; font-size: 1.2rem;
+  box-shadow: 0 0 15px #29b1d0, 0 0 1px 1px #fff;
+  // animation: bluePulse 2s 1s infinite; 
+}
+._blue-btn:active{
+  background-color: #17788e;
 }
 </style>
