@@ -1100,6 +1100,14 @@ const _server = {
         number
       })
     }
+  },
+  meibohui: {
+    apply(formData = {}) {
+      return _http.post('/shopUsers/shopSharePhone', formData)
+    },
+    share(formData = {}) {
+      return _http.post('/shopUsers/shopShare', formData)
+    }
   }
 }
 Vue.mixin({

@@ -253,6 +253,11 @@ const routes = [
     component: (resolve) => require(['./pages/hexiao'], resolve)
   },
   {
+    path: '/meibohui',
+    meta: { title: '第47届了，这次你会来参加吗？'},
+    component: (resolve) => require(['./pages/meibohui'], resolve)
+  },
+  {
     path: '*',
     meta: { title: '找不到页面' },
     component: (resolve) => require(['./pages/404'], resolve)
