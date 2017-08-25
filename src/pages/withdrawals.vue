@@ -25,6 +25,7 @@
             </div>
             <div class="l-padding">
               <button class="mui-btn l-btn-main _m" style="width: 6rem;" @click="txPage">提现</button>
+              <p class="l-fs-xs l-margin-t l-text-gray">注：提现申请于每月10号及25号统一处理，提现扣取5%手续费</p>
             </div>
           </div>
           <p class="l-margin l-fs-s l-text-gray l-text-center" v-show="list.length > 0" style="margin-bottom:0.25rem;">提现历史</p>
@@ -188,7 +189,8 @@
           <h3 class="l-margin">提现说明</h3>
           <p>1.每次最低提现金额为<span class="l-text-hot">50</span>元，最高提现金额为<span class="l-text-hot">20000</span>元。</p>
           <p>2.您的提现申请我们工作人员将于<span class="l-text-hot">每月的10号及25号</span>统一打款。审核需要一定时间，请您<span class="l-text-hot">提前3天以上</span>提出提现申请。</p>
-          <p>3.请仔细填写并核对提现资料的正确性，如果发现提交资料有误请及时联系客服（400-180-6900）</p>
+          <p>3.提现会收取提现手续费做为代扣税费，数额为提现金额的<span class="l-text-hot">5%</span></p>
+          <p>4.请仔细填写并核对提现资料的正确性，如果发现提交资料有误请及时联系客服（400-180-6900）</p>
           <div class="l-margin"><button class="mui-btn l-btn-main _m" style="min-width: 10rem;" @click="showTip = false">我知道了</button></div>
         </div>
       </div>
