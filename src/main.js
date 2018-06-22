@@ -52,7 +52,7 @@ const router = new VueRouter({
   }
 })
 
-// 微信页面授权自动登录
+// // 微信页面授权自动登录
 router.beforeEach((to, from, next) => {
   let code = utils.url.getArgs()['code'] || ''
   let openId = storage.local.get('openId')

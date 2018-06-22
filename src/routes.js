@@ -8,7 +8,6 @@ import me             from './pages/me'
 const routes = [
   {
     path: '/',
-    name: 'index',
     meta: { title: 'U视一号舒眼喷雾', mainPage: true },
     component: index
   },
@@ -38,7 +37,6 @@ const routes = [
   },
   {
     path: '/shop/car',
-    name: 'shopcar',
     meta: { title: '购物车' },
     component: shopCar
   },

@@ -9,13 +9,13 @@ let qrcode = require('assets/images/usee-test.jpg')
 let shopHost = 'http://h5.usee1.com.cn'
 
 // 正式
-if (['h5.ushiyihao.com'].indexOf(window.location.host) > -1) {
+// if (['h5.ushiyihao.com'].indexOf(window.location.host) > -1) {
   // baseUrl = 'https://bird.ioliu.cn/v1?url=' + baseUrl
   appid = 'wxc81b31922070b7ae'
   baseUrl = 'https://api.ushiyihao.com/useeproject02/interface'
   qrcode = require('assets/images/usee-online.jpg')
   shopHost = 'https://h5.ushiyihao.com'
-}
+// }
 
 const errorPromise = function(message = {}) {
   return new Promise((resolve, reject) => {
