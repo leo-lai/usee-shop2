@@ -1,9 +1,10 @@
-import index          from './pages/index'
+/* eslint-disable standard/object-curly-even-spacing */
+import index from './pages/index'
 // import indexGuid      from './pages/index-guid'
-import shop           from './pages/shop'
-import shopCar        from './pages/shop-car'
-import goodsInfo      from './pages/goods-info'
-import me             from './pages/me'
+import shop from './pages/shop'
+import shopCar from './pages/shop-car'
+import goodsInfo from './pages/goods-info'
+import me from './pages/me'
 
 const routes = [
   {

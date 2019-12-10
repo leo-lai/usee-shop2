@@ -79,7 +79,7 @@ export default {
           type: 'video/mp4',
           src: 'https://www.ushiyihao.com/uploads/meibohui.mp4'
         }],
-        poster: 'http://opii7iyzy.bkt.clouddn.com/mall/active/coverMeibo.png',
+        poster: 'http://qiniu.ushiyihao.com/mall/active/coverMeibo.png',
       },
       form: {
         shareTitle: '美博会报名活动',
@@ -106,7 +106,7 @@ export default {
     let that = this
 
     let url = that.$server.getHost() + that.$route.path
-    let imgUrl = that.$utils.image.thumb('http://opii7iyzy.bkt.clouddn.com/mall/active/useeAndMeibo.png', 60, 60)
+    let imgUrl = that.$utils.image.thumb('http://qiniu.ushiyihao.com/mall/active/useeAndMeibo.png', 60, 60)
     that.$server.wxShare({
       title: '第47届了，这次你会来参加吗？',
       desc: '免费参展体验涵盖美容，美发，水疗等多个主题，到场更有礼品赠送？',

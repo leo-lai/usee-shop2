@@ -150,7 +150,7 @@ export default {
     },
     share() {
       let that = this
-      let imgUrl = that.$utils.image.thumb('http://opii7iyzy.bkt.clouddn.com/mall/active/poster.jpg', 100, 100)
+      let imgUrl = that.$utils.image.thumb('http://qiniu.ushiyihao.com/mall/active/poster.jpg', 100, 100)
       return that.$server.wxShare({
         title: '送份眼贴给你',
         desc: '刚刚答题得了个28元的眼贴，超简单，你也快去领一份吧！',

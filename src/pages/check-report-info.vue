@@ -215,122 +215,122 @@ export default {
         {
           areaIndex: 1,
           name: 'U-1',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion1.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion1.jpg'
         },{
           areaIndex: 2,
           name: 'U-3',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion3.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion3.jpg'
         },{
           areaIndex: 3,
           name: 'U-2',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion2.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion2.jpg'
         },{
           areaIndex: 4,
           name: 'U-5',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion5.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion5.jpg'
         },{
           areaIndex: 5,
           name: 'U-1',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion1.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion1.jpg'
         },{
           areaIndex: 6,
           name: 'U-6',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion6.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion6.jpg'
         },{
           areaIndex: 7,
           name: 'U-4',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion4.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion4.jpg'
         },{
           areaIndex: 8,
           name: 'U-4',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion4.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion4.jpg'
         },{
           areaIndex: 9,
           name: 'U-7',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion7.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion7.jpg'
         },{
           areaIndex: 10,
           name: 'U-5',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion5.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion5.jpg'
         },{
           areaIndex: 11,
           name: 'U-1',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion1.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion1.jpg'
         },{
           areaIndex: 12,
           name: 'U-4',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion4.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion4.jpg'
         },{
           areaIndex: 13,
           name: 'U-8',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion8.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion8.jpg'
         }
       ],
       viscera: [
         {
           index: 1,
           name: '心脏',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/xin.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/xin.jpg'
         },
         {
           index: 2,
           name: '肝脏',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/gan.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/gan.jpg'
         },
         {
           index: 3,
           name: '脾脏',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/pi.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/pi.jpg'
         },
         {
           index: 4,
           name: '肺',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/fei.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/fei.jpg'
         },
         {
           index: 5,
           name: '肾脏',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/shen.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/shen.jpg'
         },
         {
           index: 6,
           name: '胆',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/dan.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/dan.jpg'
         },
         {
           index: 7,
           name: '胃',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/wei.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/wei.jpg'
         },
         {
           index: 8,
           name: '小肠',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/xiaochang.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/xiaochang.jpg'
         },
         {
           index: 9,
           name: '大肠',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/dachang.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/dachang.jpg'
         },
         {
           index: 10,
           name: '上焦(咽喉至胸膈部分)',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/shangjiao.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/shangjiao.jpg'
         },
         {
           index: 11,
           name: '中焦(上腹腔部分)',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/zhongjiao.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/zhongjiao.jpg'
         },
         {
           index: 12,
           name: '下焦(下腹腔部分)',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/xiajiao.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/xiajiao.jpg'
         },
         {
           index: 13,
           name: '膀胱',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/eye/organ/pangguang.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/eye/organ/pangguang.jpg'
         }
       ]
     }

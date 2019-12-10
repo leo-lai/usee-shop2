@@ -6,13 +6,15 @@
     <nav-tab></nav-tab>
     <div class="mui-content">
       <!-- banner -->
-      <swiper :options="swiperOption" ref="lSwiper" class="l-swiper">
-        <swiper-slide v-for="slide in swiperSlides">
+      <!-- <swiper :options="swiperOption" ref="lSwiper" class="l-swiper">
+        <swiper-slide v-for="(slide,index) in swiperSlides" :key="index">
           <a @click="$link(slide.clickURL)"><img class="_item" :src="slide.imagePath" /></a>
         </swiper-slide>
-        <!-- Optional controls -->
         <div class="swiper-pagination"  slot="pagination"></div>
-      </swiper>
+      </swiper> -->
+      <div class="l-swiper">
+        <img class="_item" src="/static/banner-01.jpg" />
+      </div>
      <!-- banner end--> 
 
       <!-- menu -->

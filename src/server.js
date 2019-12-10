@@ -11,19 +11,19 @@ let shopHost = 'http://h5.usee1.com.cn'
 // 正式
 // if (['h5.ushiyihao.com'].indexOf(window.location.host) > -1) {
   // baseUrl = 'https://bird.ioliu.cn/v1?url=' + baseUrl
-  appid = 'wxc81b31922070b7ae'
-  baseUrl = 'https://api.ushiyihao.com/useeproject02/interface'
-  qrcode = require('assets/images/usee-online.jpg')
-  shopHost = 'https://h5.ushiyihao.com'
+appid = 'wxc81b31922070b7ae'
+baseUrl = 'https://api.ushiyihao.com/useeproject02/interface'
+qrcode = require('assets/images/usee-online.jpg')
+shopHost = 'https://h5.ushiyihao.com'
 // }
 
-const errorPromise = function(message = {}) {
+const errorPromise = function (message = {}) {
   return new Promise((resolve, reject) => {
     reject(message)
   })
 }
 const _http = {
-  ajax(url = '', data = {}, type = 'GET', contentType = 'form') {
+  ajax (url = '', data = {}, type = 'GET', contentType = 'form') {
     url = baseUrl + url
     let headers = {
       // 'sessionId': storage.session.get('sessionId'),
@@ -35,7 +35,7 @@ const _http = {
       data = JSON.stringify(data)
     }
     let openId = storage.local.get('openId')
-    if(openId && utils.isPlainObject(openId)){
+    if (openId && utils.isPlainObject(openId)) {
       openId = openId.openId || ''
       storage.local.set('openId', openId)
     }
@@ -50,42 +50,42 @@ const _http = {
         headers,
         dataType: 'json',
         timeout: 120000,
-        success(response, status, xhr) {
-          if(response.resultCode === 200){
+        success (response, status, xhr) {
+          if (response.resultCode === 200) {
             resolve(response)
             return
           }
 
           mui.closePopups()
           mui.hideWaiting()
-          switch(response.resultCode){
+          switch (response.resultCode) {
             case 4002: // 登录失效
               storage.session.remove('sessionId')
-              if(!storage.session.get('relogin')){
+              if (!storage.session.get('relogin')) {
                 storage.session.set('relogin', 1)
                 utils.url.reload()
-              }else{
+              } else {
                 mui.toast(response.message)
               }
               reject(response.message)
               break
             case 4008: // 微信授权异常
-              mui.confirm('微信网页授权异常', '系统提示', ['返回', '重新授权'], (e)=>{
-                if(e.index == 1){
-                  window.location.replace(_server.getGrantUrl(window.location.href, undefined , 'snsapi_userinfo'))
-                }else{
+              mui.confirm('微信网页授权异常', '系统提示', ['返回', '重新授权'], (e) => {
+                if (e.index == 1) {
+                  window.location.replace(_server.getGrantUrl(window.location.href, undefined, 'snsapi_userinfo'))
+                } else {
                   reject(response.message)
                 }
               })
               break
             default:
               // mui.alert( response.message  + '(错误码：' + response.resultCode + ')' )
-              mui.alert( response.message  + '' )
+              mui.alert(response.message + '')
               reject(response.message)
               break
           }
         },
-        error(xhr, errorType, error) {
+        error (xhr, errorType, error) {
           mui.closePopups()
           mui.hideWaiting()
           mui.toast('服务器连接失败')
@@ -94,61 +94,61 @@ const _http = {
       })
     })
   },
-  get(url = '', data) {
+  get (url = '', data) {
     return this.ajax(url)
   },
-  delete(url = '', data) {
+  delete (url = '', data) {
     return this.ajax(url, undefined, 'DELETE')
   },
-  post(url, data, contentType = 'form') {
+  post (url, data, contentType = 'form') {
     return this.ajax(url, data, 'POST', contentType)
   },
-  put(url, data, contentType = 'json') {
+  put (url, data, contentType = 'json') {
     return this.ajax(url, data, 'PUT', contentType)
   }
 }
 
 const _server = {
-  getHost() {
+  getHost () {
     return window.location.origin
-  }, 
-  getWxQrcode() {
+  },
+  getWxQrcode () {
     return qrcode
   },
-  getImageBase64(imagePath) {
-    return new Promise((resolve, reject)=>{
-      if(!imagePath) {
+  getImageBase64 (imagePath) {
+    return new Promise((resolve, reject) => {
+      if (!imagePath) {
         reject()
-        return 
+        return
       }
-      if(/^data:image/i.test(imagePath)){
+      if (/^data:image/i.test(imagePath)) {
         // resolve({data: imagePath})
         reject()
-      }else{
+      } else {
         _http.post('/shopUsers/imageBase64', {path: imagePath}).then((response) => {
           !response.data && (response.data = '')
           response.data = 'data:image/jpg;base64,' + response.data
           resolve(response)
         }).catch(reject)
-      } 
+      }
     })
   },
   // 获取微信授权路径
-  getGrantUrl(url = '', params = {}, scope = 'snsapi_base') {
+  getGrantUrl (url = '', params = {}, scope = 'snsapi_base') {
     url = utils.url.setArgs(url, Object.assign({}, params, {code: undefined}))
 
-    if(!/^http(s?)/i.test(url)){ // 如果路径没带域名，加上
+    if (!/^http(s?)/i.test(url)) { // 如果路径没带域名，加上
       url = window.location.origin + url
     }
 
     // 转码路径中的特殊字符 如：/ 转换成 %2F
-    url = url.replace(/[\?&=#,]/ig, ($1)=>encodeURIComponent($1))
+    url = url.replace(/[\?&=#,]/ig, ($1) => encodeURIComponent($1))
 
     // return `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${url}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`
     return `${shopHost}/get_wx_code?appid=${appid}&redirect_uri=${url}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`
   },
   // 获取jssdk授权配置 promise返回一个对象(wx or {})
-  getWxConfig(url) {
+  getWxConfig (url) {
     url = url || (utils.device.isIos && utils.device.isWechat ? storage.session.get('Landing_Page') : window.location.href) || window.location.href
     url = url.split('#')[0]
 
@@ -179,12 +179,12 @@ const _server = {
           config.timestamp = data.timestamp
           config.nonceStr = data.nonceStr
           config.signature = data.signature
-          
+
           window.wx.config(config)
 
           window.wx.error((res) => {
             console.log('微信JS-SDK权限验证失败', res)
-            
+
             // 第一次权限验证失败再利用当前地址尝试一下
             if (res.errMsg === 'config:invalid signature' && !window.wx._try) {
               window.wx._ready = false
@@ -201,10 +201,10 @@ const _server = {
 
             wx.checkJsApi({
               jsApiList: config.jsApiList,
-              success: function(res) {
+              success: function (res) {
                 // 以键值对的形式返回，可用的api值true，不可用为false
                 // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
-                let _configOk = Object.keys(res.checkResult).length >= config.jsApiList.length ? true : false
+                let _configOk = Object.keys(res.checkResult).length >= config.jsApiList.length
                 // Object.keys(res.checkResult).forEach((jsApiName)=>{
                 //   if(!res.checkResult[jsApiName]){
                 //     _configOk = false
@@ -215,16 +215,16 @@ const _server = {
                 window.wx._configOk = _configOk
                 _configOk && console.log('微信JS-SDK权限验证成功')
 
-                if(!_configOk && !window.wx._try){
+                if (!_configOk && !window.wx._try) {
                   window.wx._ready = false
                   window.wx._try = true
                   resolve(self.getWxConfig(utils.device.isIos ? window.location.href : storage.session.get('Landing_Page')))
-                }else{
+                } else {
                   window.wx._ready = true
                   resolve(window.wx)
                 }
               },
-              fail() {
+              fail () {
                 resolve(window.wx)
               }
             })
@@ -237,7 +237,7 @@ const _server = {
     })
     return promise
   },
-  getWxPayConfig(formData = {}) { // 微信支付配置
+  getWxPayConfig (formData = {}) { // 微信支付配置
     let promise = new Promise((resolve, reject) => {
       if (!formData.orderId) {
         reject('支付失败：订单id不存在')
@@ -256,7 +256,7 @@ const _server = {
 
     return promise
   },
-  chooseWXPay(formData) { // 微信jssdk支付
+  chooseWXPay (formData) { // 微信jssdk支付
     let promise = new Promise((resolve, reject) => {
       if (!utils.device.isWechat) {
         mui.toast('请使用微信浏览器支付')
@@ -274,7 +274,7 @@ const _server = {
               package: data.package,
               signType: data.signType,
               paySign: data.paySign,
-              success(res) {
+              success (res) {
                 if (res.err_msg === 'get_brand_wcpay_request:ok') {
                   resolve('ok')
                 } else if (res.err_msg === 'get_brand_wcpay_request:cancel') {
@@ -288,7 +288,7 @@ const _server = {
               },
               fail: (err) => { return reject(err.errMsg) }
             })
-          }).finally(()=>{
+          }).finally(() => {
             mui.hideWaiting()
           })
         } else {
@@ -299,7 +299,7 @@ const _server = {
     })
     return promise
   },
-  chooseWXPay2(formData) { // 微信浏览器支付
+  chooseWXPay2 (formData) { // 微信浏览器支付
     let promise = new Promise((resolve, reject) => {
       if (!utils.device.isWechat) {
         mui.toast('请使用微信浏览器支付')
@@ -308,7 +308,7 @@ const _server = {
       }
       mui.showWaiting('正在支付...')
       this.getWxPayConfig(formData).then((data) => {
-        let onBridgeReady = function(){
+        let onBridgeReady = function () {
           WeixinJSBridge.invoke('getBrandWCPayRequest', data, (res) => {
             if (res.err_msg === 'get_brand_wcpay_request:ok') {
               resolve('ok')
@@ -322,19 +322,19 @@ const _server = {
             }
           })
         }
-        if (typeof WeixinJSBridge == 'undefined') {
+        if (typeof WeixinJSBridge === 'undefined') {
           document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false)
         } else {
           onBridgeReady()
         }
-      }).catch(reject).finally(()=>{
+      }).catch(reject).finally(() => {
         mui.hideWaiting()
       })
     })
 
     return promise
   },
-  previewImage(imgs = [], index = 0) {
+  previewImage (imgs = [], index = 0) {
     return new Promise((resolve, reject) => {
       mui.showWaiting()
       this.getWxConfig().then((wx) => {
@@ -342,7 +342,7 @@ const _server = {
           wx.previewImage({
             current: imgs[index], // 当前显示图片的http链接
             urls: imgs, // 需要预览的图片http链接列表
-            fail(err) {
+            fail (err) {
               mui.alert('预览图片失败：' + err.errMsg)
             }
           })
@@ -354,15 +354,15 @@ const _server = {
       })
     })
   },
-  chooseImage(count = 1) {
+  chooseImage (count = 1) {
     return new Promise((resolve, reject) => {
       mui.showWaiting()
       this.getWxConfig().then((wx) => {
         if (wx._ready) {
           wx.chooseImage({
             count,
-            sizeType: ['original', 'compressed'], 
-            sourceType: ['album', 'camera'], 
+            sizeType: ['original', 'compressed'],
+            sourceType: ['album', 'camera'],
             success: function (res) {
               resolve(res.localIds)
             },
@@ -375,18 +375,18 @@ const _server = {
       })
     })
   },
-  uploadImage(localIds = [], remote = true) {
+  uploadImage (localIds = [], remote = true) {
     return new Promise((resolve, reject) => {
       let _serverIds = []
       let _localIds = []
       let len = localIds.length
-      if(len > 1){
-        mui.showWaiting('上传中(1/'+len+')')  
-      }else{
+      if (len > 1) {
+        mui.showWaiting('上传中(1/' + len + ')')
+      } else {
         mui.showWaiting('上传中')
       }
-      
-      let _ = function syncUpload(localIds){
+
+      let _ = (function syncUpload (localIds) {
         let localId = localIds.pop()
         wx.uploadImage({
           localId,
@@ -394,22 +394,22 @@ const _server = {
           success: function (res) {
             _serverIds.push(res.serverId)
             _localIds.push(localId)
-            
-            if(localIds.length > 0){
-              mui.showWaiting('上传中('+_localIds.length+'/'+len+')')
+
+            if (localIds.length > 0) {
+              mui.showWaiting('上传中(' + _localIds.length + '/' + len + ')')
               syncUpload(localIds)
-            }else{
-              if(remote) {
-                _http.post('/shop/uploadImage', {media_ids: _serverIds.join(',')}).then(({data})=>{
+            } else {
+              if (remote) {
+                _http.post('/shop/uploadImage', {media_ids: _serverIds.join(',')}).then(({data}) => {
                   resolve({
                     serverIds: _serverIds,
                     localIds: _localIds,
-                    images: data
+                    images: data.map(item => item.replace('opii7iyzy.bkt.clouddn.com', 'qiniu.ushiyihao.com'))
                   })
-                }).finally(()=>{
+                }).finally(() => {
                   mui.hideWaiting()
-                }) 
-              }else{
+                })
+              } else {
                 resolve({
                   serverIds: _serverIds,
                   localIds: [],
@@ -419,17 +419,17 @@ const _server = {
               }
             }
           },
-          fail(err) {
-            if(localIds.length === 0){
+          fail (err) {
+            if (localIds.length === 0) {
               mui.hideWaiting()
               reject(err.errMsg)
             }
           }
         })
-      }(localIds)
+      }(localIds))
     })
   },
-  wxShare(shareInfo = {
+  wxShare (shareInfo = {
     title: '我为U视喷喷代言',
     desc: '喷3次，停3秒，眨3下，U视喷喷9秒靓眼，随时随地，想喷就喷。',
     link: _server.getHost()
@@ -440,13 +440,13 @@ const _server = {
         mui.hideWaiting()
 
         // if (wx._ready) {
-          let _info = Object.assign({}, shareInfo)
-          wx.onMenuShareTimeline(_info)
-          wx.onMenuShareAppMessage(_info)
-          wx.onMenuShareQQ(_info)
-          wx.onMenuShareQZone(_info)
+        let _info = Object.assign({}, shareInfo)
+        wx.onMenuShareTimeline(_info)
+        wx.onMenuShareAppMessage(_info)
+        wx.onMenuShareQQ(_info)
+        wx.onMenuShareQZone(_info)
 
-          resolve(wx)
+        resolve(wx)
         // }else{
         //   reject('微信JS-SDK授权异常')
         // }
@@ -454,7 +454,7 @@ const _server = {
     })
   },
   // 获取当前经纬度 成功失败都返回一个对象
-  getPosition() {
+  getPosition () {
     let position = storage.local.get('position')
     const _defualt = { // 获取位置失败返回默认坐标
       error: '获取地理位置失败',
@@ -470,12 +470,12 @@ const _server = {
           if (wx._ready) { // 调取微信地址位置接口
             wx.getLocation({
               type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-              success(res) {
+              success (res) {
                 position = res
                 storage.local.set('position', position, 1000 * 1800)
                 resolve(position)
               },
-              fail(err) {
+              fail (err) {
                 console.log('地理定位失败', err)
                 resolve(_defualt)
               }
@@ -490,16 +490,16 @@ const _server = {
               let errHtml = ''
               switch (error.code) {
                 case error.PERMISSION_DENIED:
-                  errHtml = "用户拒绝对获取地理位置的请求。"
+                  errHtml = '用户拒绝对获取地理位置的请求。'
                   break
                 case error.POSITION_UNAVAILABLE:
-                  errHtml = "位置信息是不可用的。"
+                  errHtml = '位置信息是不可用的。'
                   break
                 case error.TIMEOUT:
-                  errHtml = "请求用户地理位置超时。"
+                  errHtml = '请求用户地理位置超时。'
                   break
                 case error.UNKNOWN_ERROR:
-                  errHtml = "未知错误。"
+                  errHtml = '未知错误。'
                   break
               }
               _defualt.error = errHtml
@@ -512,7 +512,7 @@ const _server = {
     return promise
   },
   // 获取当前地址 使用腾讯地图WebService API
-  getAddress() {
+  getAddress () {
     const self = this
     let ret = ''
     let promise = new Promise((resolve) => {
@@ -527,9 +527,9 @@ const _server = {
               key: 'GPIBZ-V7YH3-CD735-3HDQM-CNM3F-4PFQP',
               output: 'jsonp'
             }
-          }, function({ body }) {
+          }, function ({ body }) {
             if (body.status == 0) {
-              storage.local.set('address', body.result, 1000 * 1800);
+              storage.local.set('address', body.result, 1000 * 1800)
               resolve(body.result)
             } else {
               resolve(ret)
@@ -541,10 +541,10 @@ const _server = {
     return promise
   },
   // 获取两个经纬度的距离
-  getDistance(lng1 = 0, lat1 = 0, lng2 = 0, lat2 = 0) {
-    let EARTH_RADIUS = 6378137.0 //单位M
+  getDistance (lng1 = 0, lat1 = 0, lng2 = 0, lat2 = 0) {
+    let EARTH_RADIUS = 6378137.0 // 单位M
     let PI = Math.PI
-    let getRad = function(d) {
+    let getRad = function (d) {
       return d * PI / 180.0
     }
 
@@ -582,7 +582,7 @@ const _server = {
     return Number((m / 1000).toFixed(2))
   },
   // 发送手机验证码
-  sendMobiCode(phone, btn) {
+  sendMobiCode (phone, btn) {
     if (!/^1\d{10}$/.test(phone)) {
       mui.alert('请输入正确手机号码')
       return errorPromise('请输入正确手机号码')
@@ -619,31 +619,31 @@ const _server = {
     return promise
   },
   // 注销
-  logout(tipText = '请先登录', toUrl = window.location.pathname) {
-    return new Promise((resolve)=>{
+  logout (tipText = '请先登录', toUrl = window.location.pathname) {
+    return new Promise((resolve) => {
       let sessionId = storage.session.get('sessionId')
       if (sessionId) {
         mui.showWaiting()
-        _http.post('/shopUsers/loginOut', { sessionId }).finally(()=>{
+        _http.post('/shopUsers/loginOut', { sessionId }).finally(() => {
           mui.hideWaiting()
           resolve()
         })
-      }else{
+      } else {
         resolve()
       }
-    }).finally(()=>{
+    }).finally(() => {
       // 清除缓存
       storage.session.remove('sessionId')
       storage.local.remove('userInfo')
       _server.clearTempStore()
-      
+
       tipText && mui.toast(tipText)
 
       if (utils.device.isWechat) {
         // 避免登录后跳转到登录页面
         toUrl = toUrl === '/login' ? '/index' : toUrl
 
-        window.location.replace(_server.getGrantUrl(`/login?to=${toUrl}`, undefined , 'snsapi_userinfo'))
+        window.location.replace(_server.getGrantUrl(`/login?to=${toUrl}`, undefined, 'snsapi_userinfo'))
       } else {
         Vue._link(`/login?to=${toUrl}`, 'page-in')
       }
@@ -651,18 +651,18 @@ const _server = {
       return true
     })
   },
-  clearTempStore() { // 清除临时缓存
+  clearTempStore () { // 清除临时缓存
     // storage.local.remove('isFollow')
     // storage.local.remove('openId')
     storage.local.remove('qrcode_img')
     storage.local.remove('buy_slted_address')
-  }, 
+  },
   // 检测登录
-  checkLogin() {
+  checkLogin () {
     return storage.session.get('sessionId')
   },
   // 登录
-  login(type, formData = {}) {
+  login (type, formData = {}) {
     var url = type == 1 ? '/shopUsers/loginPassword' : '/shopUsers/loginCode'
     formData.qrUserCode = storage.session.get('bind_qrcode')
     return _http.post(url, formData).then((response) => {
@@ -674,7 +674,7 @@ const _server = {
     })
   },
   // 注册
-  register(formData = {}) {
+  register (formData = {}) {
     formData.qrUserCode = storage.session.get('bind_qrcode')
     return _http.post('/shopUsers/register', formData).then((response) => {
       !response.data && (response.data = {})
@@ -684,70 +684,70 @@ const _server = {
     })
   },
   // 修改密码、找回密码
-  changePwd(formData) {
+  changePwd (formData) {
     return _http.post('/shopUsers/forgetPassword', formData).then((response) => {
       !response.data && (response.data = {})
       return response
     })
   },
   // 首页幻灯片
-  getBanner() {
+  getBanner () {
     return _http.post('/carouselFigure/getImages').then((response) => {
       !response.data && (response.data = [])
       return response
     })
   },
-  getXiaoUInfo() {
+  getXiaoUInfo () {
     return _http.post('/agentInfoU/index').then((response) => {
       !response.data && (response.data = {})
       return response
     })
   },
-  getQuestionnaire(projectId = '') { // 问卷调查
+  getQuestionnaire (projectId = '') { // 问卷调查
     return _http.post('/questionnaire/getQuestionnaire', {projectId}).then((response) => {
       !response.data && (response.data = [])
       return response
     })
   },
-  submitQuestionnaire(formData) { // 问卷调查
+  submitQuestionnaire (formData) { // 问卷调查
     return _http.post('/questionnaire/answer', formData)
   },
   // 地址
   address: {
-    getList() {
+    getList () {
       return _http.post('/shopUsers/myAddressList').then((response) => {
         !response.data && (response.data = [])
         return response
       })
     },
-    eidtInfo(formData) {
+    eidtInfo (formData) {
       return _http.post('/shopUsers/addOrEditAddress', formData)
     },
-    del(addressId) {
+    del (addressId) {
       return _http.post('/shopUsers/delAddress', { addressId })
     },
-    setDefault(addressId) {
+    setDefault (addressId) {
       return _http.post('/shopUsers/setAddressIsDefault', { addressId })
     }
   },
   // 商城
   shop: {
-    getGoodsList(recommend = '') {
+    getGoodsList (recommend = '') {
       return _http.post('/shopGoods/goodsSearch', { isIndex: recommend }).then((response) => {
         !response.data && (response.data = [])
         return response
       })
     },
-    getGoodsInfo(goodsId = '') {
+    getGoodsInfo (goodsId = '') {
       return _http.post('/shopGoods/goodsInfo', { goodsId }).then((response) => {
         !response.data && (response.data = {})
         return response
       })
     },
-    evaluateGoods(formData) { // 评价商品
+    evaluateGoods (formData) { // 评价商品
       return _http.post('/shopJudge/beJudge', formData)
     },
-    getEvaluate(goodsTypeId, page = 1, rows = 10) { // 商品评价列表
+    getEvaluate (goodsTypeId, page = 1, rows = 10) { // 商品评价列表
       return _http.post('/shopJudge/getJudgeList', {
         goodsTypeId,
         page,
@@ -761,43 +761,43 @@ const _server = {
   },
   // 购物车
   shopcar: {
-    getList() {
+    getList () {
       return _http.post('/shopGoods/shoppingCartList').then((response) => {
         !response.data && (response.data = [])
         return response
       })
     },
     // 修改购物车数量
-    editNum(shoppingCartId, number = 1) {
+    editNum (shoppingCartId, number = 1) {
       return _http.post('/shopGoods/changeShoppingCart', {
         shoppingCartId,
         number
       })
     },
     // 添加商品到购物车
-    add(formData) {
+    add (formData) {
       return _http.post('/shopGoods/addShoppingCart', formData)
     },
     // 删除一个或多个购物车商品
-    del(shoppingCartIds) { // id = '1,2,3'
+    del (shoppingCartIds) { // id = '1,2,3'
       return _http.post('/shopGoods/delShoppingCart', {
         shoppingCartIds
       })
     },
-    getNum() {
-      return new Promise((resolve)=>{
-        if(_server.checkLogin()){
+    getNum () {
+      return new Promise((resolve) => {
+        if (_server.checkLogin()) {
           let shopcarNumber = storage.session.get('shopcarNumber')
-          if(shopcarNumber){
+          if (shopcarNumber) {
             resolve({ data: shopcarNumber })
-          }else{
+          } else {
             _http.post('/shopGoods/shoppingCartNumber').then((response) => {
               !response.data && (response.data = 0)
               storage.session.set('shopcarNumber', response.data)
               resolve(response)
-            })  
+            })
           }
-        }else{
+        } else {
           resolve({ data: 0 })
         }
       })
@@ -805,7 +805,7 @@ const _server = {
   },
   // 订单
   order: {
-    getList(status = 'ALL', page = 1, rows = 10) { // 订单列表 ALL UNPAY RECEIVE EVALUATE
+    getList (status = 'ALL', page = 1, rows = 10) { // 订单列表 ALL UNPAY RECEIVE EVALUATE
       return _http.post('/shopUsers/myOrders', {
         status,
         page,
@@ -816,7 +816,7 @@ const _server = {
         return response
       })
     },
-    changeStatus(orderId, status) { // CANCEL RECEIVE
+    changeStatus (orderId, status) { // CANCEL RECEIVE
       let ordersState = ''
       switch (status) {
         case 'CANCEL':
@@ -831,45 +831,45 @@ const _server = {
         ordersState
       })
     },
-    getInfo(orderId) {
+    getInfo (orderId) {
       return _http.post('/shopGoods/orderInfo', { orderId }).then((response) => {
         !response.data && (response.data = {})
         return response
       })
     },
-    addFromGoodsInfo(formData) { // 1从订单详情下单
+    addFromGoodsInfo (formData) { // 1从订单详情下单
       return _http.post('/shopGoods/addOrders', formData)
     },
-    addFromShopcar(formData) { // 2从购物车下单
+    addFromShopcar (formData) { // 2从购物车下单
       return _http.post('/shopGoods/addOrdersOfshoppingCart', formData)
     },
-    cancel(orderId) { // 取消订单
+    cancel (orderId) { // 取消订单
       return _http.put(`/Member/order/cancel/${orderId}`)
     },
-    recive(orderId) { // 收货
+    recive (orderId) { // 收货
       return _http.put(`/Member/order/order_recive/${orderId}`)
     },
-    editInvoice(formData) { // 修改发票
+    editInvoice (formData) { // 修改发票
       return _http.post('/shopUsers/addOrEditInvoiceInfo', formData)
     },
-    getInvoice() {
+    getInvoice () {
       return _http.post('/shopUsers/myInvoiceInfo').then((response) => {
         !response.data && (response.data = {})
         return response
       })
     },
-    getExpressInfo(orderId = '17') { // 查看物流
+    getExpressInfo (orderId = '17') { // 查看物流
       return _http.post('/shopGoods/expressInfo', {
         orderId
       })
     },
-    checkAfterSales(formData) {
+    checkAfterSales (formData) {
       return _http.post('/afterSales/check', formData).then((response) => {
         !response.data && (response.data = {})
         return response
       })
     },
-    applyAfterSales(formData) {
+    applyAfterSales (formData) {
       return _http.post('/afterSales/putInFor', formData).then((response) => {
         !response.data && (response.data = {})
         return response
@@ -879,10 +879,10 @@ const _server = {
 
   // -------------------------------------------------------------
   user: {
-    login(formData = {}) {
+    login (formData = {}) {
       storage.session.remove('sessionId')
       formData.openId = storage.local.get('openId')
-      return _http.post('/shopUsers/silenceLogin', formData).then((response)=>{
+      return _http.post('/shopUsers/silenceLogin', formData).then((response) => {
         !response.data && (response.data = {})
         response.data.avatar = utils.image.wxHead(response.data.image)
         storage.session.remove('relogin')
@@ -893,16 +893,16 @@ const _server = {
         return response
       })
     },
-    getInfo(remote) {
-      return new Promise((resolve)=>{
-        if(!_server.checkLogin()){
+    getInfo (remote) {
+      return new Promise((resolve) => {
+        if (!_server.checkLogin()) {
           return resolve({data: {}})
         }
 
         let userInfo = storage.local.get('userInfo')
-        if(!remote && userInfo){
+        if (!remote && userInfo) {
           resolve({data: userInfo})
-        }else{
+        } else {
           _http.post('/shopUsers/refresh').then((response) => {
             !response.data && (response.data = {})
             response.data.avatar = utils.image.wxHead(response.data.image)
@@ -914,11 +914,11 @@ const _server = {
         }
       })
     },
-    bind(qrUserCode = '', code = '') {
+    bind (qrUserCode = '', code = '') {
       qrUserCode = qrUserCode || storage.session.get('bind_qrcode')
       code = code || storage.session.get('wx_code')
 
-      if(!code) {
+      if (!code) {
         return errorPromise({
           status: 4008,
           tips: false,
@@ -926,7 +926,7 @@ const _server = {
         })
       }
 
-      if(!qrUserCode) {
+      if (!qrUserCode) {
         return errorPromise({
           status: 4005,
           tips: !!code,
@@ -943,34 +943,34 @@ const _server = {
         return response
       })
     },
-    resetWxInfo(code = '') {
+    resetWxInfo (code = '') {
       return _http.post('/shopUsers/refreshCode', { code }).then((response) => {
         !response.data && (response.data = {})
         response.data.avatar = utils.image.wxHead(response.data.image)
         let userInfo = Object.assign({}, storage.local.get('userInfo'), response.data)
-        storage.local.set('userInfo',  userInfo, 1000*60*15)
+        storage.local.set('userInfo', userInfo, 1000 * 60 * 15)
         return response
       })
     },
-    getBankInfo() {
+    getBankInfo () {
       return _http.post('/shopUsers/myBankInfo').then((response) => {
         !response.data && (response.data = {})
         return response
       })
     },
-    addOrEditBankInfo(formData) {
+    addOrEditBankInfo (formData) {
       return _http.post('/shopUsers/addOrEditBankInfo', formData).then((response) => {
         !response.data && (response.data = {})
         return response
       })
     },
-    withdrawals(formData) {
+    withdrawals (formData) {
       return _http.post('/shopUsers/withdrawals', formData).then((response) => {
         !response.data && (response.data = {})
         return response
       })
     },
-    getWithdrawalsRecord(startDate = '', finishDate = '', page = 1, rows = 10) {
+    getWithdrawalsRecord (startDate = '', finishDate = '', page = 1, rows = 10) {
       return _http.post('/shopUsers/withdrawalsRecord', {
         startDate, finishDate, page, rows
       }).then((response) => {
@@ -979,7 +979,7 @@ const _server = {
         return response
       })
     },
-    getRebateRecord(startDate = '', finishDate = '', page = 1, rows = 10) {
+    getRebateRecord (startDate = '', finishDate = '', page = 1, rows = 10) {
       return _http.post('/shopUsers/rebateRecord', {
         startDate, finishDate, page, rows
       }).then((response) => {
@@ -988,7 +988,7 @@ const _server = {
         return response
       })
     },
-    getCustomer(isSuccess = 1, page = 1, rows = 10) {
+    getCustomer (isSuccess = 1, page = 1, rows = 10) {
       return _http.post('/shopUsers/myCustomer', {
         isSuccess, page, rows
       }).then((response) => {
@@ -997,50 +997,50 @@ const _server = {
         return response
       })
     },
-    notify(notify = 1) {
-      return _http.post('/shopUsers/notify', { notify }).then((response)=>{
-        if(response.data == 1){
+    notify (notify = 1) {
+      return _http.post('/shopUsers/notify', { notify }).then((response) => {
+        if (response.data == 1) {
           storage.local.set('userInfo', Object.assign({}, storage.local.get('userInfo'), {notify: response.data}))
         }
         return response
       })
     },
-    getXiaoUExpress(deliveryCode = '') {
+    getXiaoUExpress (deliveryCode = '') {
       return _http.post('/agentInfoU/deliveryExpress', {
         deliveryCode
       })
     }
   },
-  agent: { 
-    getResult(userCode = '') { // 代理商申请进度
+  agent: {
+    getResult (userCode = '') { // 代理商申请进度
       return _http.post('/shopUsers/applyAgentBefor', {
         userCode
       })
     },
-    apply(formData = {}) {  // 代理商申请
+    apply (formData = {}) {  // 代理商申请
       return _http.post('/shopUsers/applyAgent', formData)
     }
   },
   check: {
-    bodyQuestion() {
+    bodyQuestion () {
       return _http.post('/constitution/list')
     },
-    bodyCheckLast() {
+    bodyCheckLast () {
       return _http.post('/constitution/index')
     },
-    bodyAnswer(formData = {}) {
+    bodyAnswer (formData = {}) {
       return _http.post('/constitution/answer', formData)
     },
-    uploadEyePhoto(formData = {}) {
+    uploadEyePhoto (formData = {}) {
       return _http.post('/pupilsDiagnosis/pupilsImages', formData)
     },
-    eyeResult(formData = {}) {
+    eyeResult (formData = {}) {
       return _http.post('/pupilsDiagnosis/pupilsSymptom', formData)
     },
-    getResult(formData = {}) {
+    getResult (formData = {}) {
       return _http.post('/pupilsDiagnosis/pupilsAndConstitution', formData)
     },
-    getReportList(page = 1, rows = 10) {
+    getReportList (page = 1, rows = 10) {
       return _http.post('/pupilsDiagnosis/pupilsAndConstitutionList', {
         page, rows
       }).then((response) => {
@@ -1049,12 +1049,12 @@ const _server = {
         return response
       })
     },
-    getReportInfo(uuidCode) {
+    getReportInfo (uuidCode) {
       return _http.post('/pupilsDiagnosis/pupilsAndConstitutionInfo', {uuidCode})
     }
   },
   news: {
-    getList(page = 1, rows = 10) {
+    getList (page = 1, rows = 10) {
       return _http.post('/websiteNews/websiteNewsSharList', {
         page, rows
       }).then((response) => {
@@ -1063,21 +1063,21 @@ const _server = {
         return response
       })
     },
-    getInfo(newsId = '', userCode = '') {
+    getInfo (newsId = '', userCode = '') {
       return _http.post('/websiteNews/websiteNewsShareInfo', {newsId, userCode})
     },
-    share(newsId = '', userCode = '') {
+    share (newsId = '', userCode = '') {
       return _http.post('/websiteNews/websiteNewsWechatShare', {newsId, userCode})
     }
   },
   pay: {
-    getPayCode(formData = {}) {
+    getPayCode (formData = {}) {
       return _http.post('/receivables/getPayQR', formData).then((response) => {
         !response.data && (response.data = {})
         return response
       })
     },
-    getRecord(page = 1, rows = 10) {
+    getRecord (page = 1, rows = 10) {
       return _http.post('/receivables/receivablesList', {
         page, rows
       }).then((response) => {
@@ -1085,33 +1085,32 @@ const _server = {
         response.data.rows = rows
         return response
       })
-      
     }
   },
   movie: {
-    get(formData = {}) {
+    get (formData = {}) {
       return _http.post('/filmfestival/getTicket', formData)
     },
-    getTicketInfo(formData = {}) {
+    getTicketInfo (formData = {}) {
       return _http.post('/filmfestival/getTicketInfo', formData)
     },
-    hexiao(number) {
+    hexiao (number) {
       return _http.post('/filmfestival/verificationTickets', {
         number
       })
     }
   },
   meibohui: {
-    apply(formData = {}) {
+    apply (formData = {}) {
       return _http.post('/shopUsers/shopSharePhone', formData)
     },
-    share(formData = {}) {
+    share (formData = {}) {
       return _http.post('/shopUsers/shopShare', formData)
     }
   }
 }
 Vue.mixin({
-  created() {
+  created () {
     this.$server = _server
   }
 })

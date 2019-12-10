@@ -128,7 +128,7 @@ export default {
       title: '一起去看个电影吧',
       desc: '三生三世电影票限量免费抢',
       link: that.$server.getHost() + '/movie/' + that.$route.params.id,
-      imgUrl: 'http://opii7iyzy.bkt.clouddn.com/mall/share/sharePic.jpg',
+      imgUrl: 'http://qiniu.ushiyihao.com/mall/share/sharePic.jpg',
       success(res) {
         that.$mui.toast('分享成功')
       }

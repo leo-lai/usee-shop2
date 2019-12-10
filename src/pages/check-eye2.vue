@@ -414,55 +414,55 @@ export default {
         {
           areaIndex: 1,
           name: 'U-1',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion1.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion1.jpg'
         },{
           areaIndex: 2,
           name: 'U-3',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion3.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion3.jpg'
         },{
           areaIndex: 3,
           name: 'U-2',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion2.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion2.jpg'
         },{
           areaIndex: 4,
           name: 'U-5',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion5.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion5.jpg'
         },{
           areaIndex: 5,
           name: 'U-1',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion1.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion1.jpg'
         },{
           areaIndex: 6,
           name: 'U-6',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion6.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion6.jpg'
         },{
           areaIndex: 7,
           name: 'U-4',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion4.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion4.jpg'
         },{
           areaIndex: 8,
           name: 'U-4',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion4.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion4.jpg'
         },{
           areaIndex: 9,
           name: 'U-7',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion7.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion7.jpg'
         },{
           areaIndex: 10,
           name: 'U-5',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion5.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion5.jpg'
         },{
           areaIndex: 11,
           name: 'U-1',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion1.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion1.jpg'
         },{
           areaIndex: 12,
           name: 'U-4',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion4.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion4.jpg'
         },{
           areaIndex: 13,
           name: 'U-8',
-          image: 'http://opii7iyzy.bkt.clouddn.com/mall/recommend/potion8.jpg'
+          image: 'http://qiniu.ushiyihao.com/mall/recommend/potion8.jpg'
         }
       ],
       leftZz: {
